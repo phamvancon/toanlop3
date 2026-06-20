@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toán Lớp 3 - Kết Nối Tri Thức</title>
+    <title>Toán Lớp 3 - Kết Nối Tri Thức & Quản Trị Admin</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -35,8 +35,6 @@
     </script>
     <!-- Google Fonts Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Canvas Confetti for celebratory success -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -97,8 +95,12 @@
                     <span id="stat-trophies" class="font-extrabold text-sm text-orange-700">0</span>
                 </div>
                 <!-- Leaderboard Link -->
-                <button onclick="changeView('leaderboard')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-2 rounded-full border border-indigo-200 transition-colors" title="Bảng vàng danh vọng">
-                    <i data-lucide="crown" class="w-5 h-5"></i>
+                <button onclick="changeView('leaderboard')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-2 rounded-full border border-indigo-200 transition-colors flex items-center justify-center" title="Bảng vàng danh vọng">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/></svg>
+                </button>
+                <!-- Admin Lock Entry Link (Header) -->
+                <button onclick="openAdminLoginModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 rounded-full border border-slate-300 transition-colors flex items-center justify-center" title="Bảng quản trị Admin">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 </button>
             </div>
         </div>
@@ -115,12 +117,12 @@
             <div class="relative z-10">
                 <span class="text-6xl bouncy inline-block mb-4">✨✏️📐</span>
                 <h2 class="text-3xl sm:text-4xl font-black text-brand-600 mb-2">Chào mừng bạn nhỏ đến với lớp học Toán 3!</h2>
-                <p class="text-slate-500 font-bold mb-6">Hãy chọn cho mình một người bạn đồng hành tinh nghịch và nhập tên của con nhé!</p>
+                <p class="text-slate-500 font-bold mb-6">Hãy chọn cho mình một người bạn đồng hành tinh nghịch và nhập tên hoặc mã học sinh (Ví dụ: <span class="text-brand-600 font-extrabold">ECO001</span>) của con nhé!</p>
 
                 <!-- Input Name -->
                 <div class="mb-8 max-w-xs mx-auto">
-                    <label for="input-nickname" class="block text-left text-sm font-extrabold text-slate-500 mb-2">Tên của con là gì?</label>
-                    <input type="text" id="input-nickname" placeholder="Nhập tên của con..." 
+                    <label for="input-nickname" class="block text-left text-sm font-extrabold text-slate-500 mb-2">Tên hoặc Mã Học Sinh là gì?</label>
+                    <input type="text" id="input-nickname" placeholder="Nhập tên hoặc Mã (Ví dụ: ECO001)..." 
                            class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-brand-400 focus:ring-0 text-center font-black text-lg text-slate-700 bg-slate-50 outline-none transition-all">
                 </div>
 
@@ -147,9 +149,14 @@
                     </button>
                 </div>
 
-                <button onclick="startApp()" class="w-full max-w-xs py-4 px-8 bg-brand-500 hover:bg-brand-600 text-white font-black text-xl rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
-                    Vào Học Ngay Thôi! 🚀
-                </button>
+                <div class="flex flex-col items-center space-y-4">
+                    <button onclick="startApp()" class="w-full max-w-xs py-4 px-8 bg-brand-500 hover:bg-brand-600 text-white font-black text-xl rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                        Vào Học Ngay Thôi! 🚀
+                    </button>
+                    <button onclick="openAdminLoginModal()" class="text-xs font-bold text-slate-400 hover:text-slate-600 underline flex items-center gap-1.5 justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Đăng nhập Cổng Quản Trị Admin
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -232,8 +239,8 @@
             <!-- Header for Lesson -->
             <div class="bg-white rounded-2xl p-4 border-2 border-brand-200 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
-                    <button onclick="changeView('dashboard')" class="bg-slate-100 hover:bg-slate-200 p-2.5 rounded-xl transition-colors">
-                        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-600"></i>
+                    <button onclick="changeView('dashboard')" class="bg-slate-100 hover:bg-slate-200 p-2.5 rounded-xl transition-colors flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-slate-600"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                     </button>
                     <div>
                         <h2 id="study-week-title" class="font-black text-slate-800 text-lg sm:text-xl">Tuần 1: Ôn Tập Các Số Đến 1000</h2>
@@ -280,7 +287,7 @@
                     <!-- Explanatory Box (Hidden initially) -->
                     <div id="study-explanation-box" class="hidden mt-6 p-4 rounded-2xl bg-teal-50 border border-teal-200 text-slate-700 space-y-2">
                         <div class="flex items-center space-x-2 text-teal-600">
-                            <i data-lucide="info" class="w-5 h-5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                             <span class="font-black text-sm">Lời Giải Chi Tiết:</span>
                         </div>
                         <p id="study-explanation-text" class="text-sm font-bold leading-relaxed"></p>
@@ -307,8 +314,8 @@
             <!-- Header with Timer -->
             <div class="bg-white rounded-2xl p-4 border-2 border-pink-200 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
-                    <span class="bg-pink-100 text-pink-600 p-2 rounded-xl">
-                        <i data-lucide="timer" class="w-6 h-6"></i>
+                    <span class="bg-pink-100 text-pink-600 p-2 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><line x1="10" y1="2" x2="14" y2="2"/><line x1="12" y1="14" x2="15" y2="11"/><circle cx="12" cy="14" r="8"/></svg>
                     </span>
                     <div>
                         <h2 id="test-week-title" class="font-black text-slate-800 text-base sm:text-lg">Kiểm tra: Tuần 1</h2>
@@ -397,8 +404,8 @@
             <!-- Mountain Map header -->
             <div class="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-3xl p-6 text-white shadow-lg flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
-                    <button onclick="changeView('dashboard')" class="bg-white/10 hover:bg-white/20 p-2.5 rounded-xl transition-colors">
-                        <i data-lucide="arrow-left" class="w-5 h-5 text-white"></i>
+                    <button onclick="changeView('dashboard')" class="bg-white/10 hover:bg-white/20 p-2.5 rounded-xl transition-colors flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                     </button>
                     <div>
                         <h2 class="font-black text-white text-lg sm:text-xl">Chinh Phục Đỉnh Núi Toán Tư Duy 🗻</h2>
@@ -472,8 +479,8 @@
             <!-- Header -->
             <div class="bg-white rounded-2xl p-4 border-2 border-indigo-100 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <button onclick="changeView('dashboard')" class="bg-slate-100 hover:bg-slate-200 p-2 rounded-xl transition-colors">
-                        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-600"></i>
+                    <button onclick="changeView('dashboard')" class="bg-slate-100 hover:bg-slate-200 p-2 rounded-xl transition-colors flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-slate-600"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                     </button>
                     <h2 class="font-black text-slate-800 text-lg">🏆 Bảng Vàng Thành Tích</h2>
                 </div>
@@ -482,9 +489,117 @@
 
             <!-- Standings list -->
             <div class="bg-white rounded-3xl border-4 border-indigo-400 p-5 shadow-lg space-y-4">
-                <p class="text-xs text-slate-400 font-extrabold text-center uppercase tracking-wider">Cập nhật lúc 2026</p>
+                <p class="text-xs text-slate-400 font-extrabold text-center uppercase tracking-wider">Cập nhật mới nhất</p>
                 <div id="leaderboard-list" class="space-y-2.5">
                     <!-- Dynamic standing rows -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. ADMIN DASHBOARD VIEW -->
+        <section id="view-admin" class="hidden w-full space-y-6">
+            <!-- Secure Admin Header -->
+            <div class="bg-slate-800 text-white rounded-3xl p-6 shadow-lg flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-slate-700 p-3 rounded-2xl text-2xl">📊</span>
+                    <div>
+                        <h2 class="text-xl font-black">Cổng Quản Trị Viên (Admin)</h2>
+                        <p class="text-xs text-slate-300 font-bold">Hệ thống đồng bộ dữ liệu thi cử, theo dõi & phân loại học lực</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="changeView('dashboard')" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 font-bold text-sm rounded-xl transition-all flex items-center gap-1.5 justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Học Tập
+                    </button>
+                    <button onclick="logoutAdmin()" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 font-bold text-sm rounded-xl transition-all">
+                        Đăng xuất Admin
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Analytics Scorecards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-400 font-extrabold uppercase tracking-wide">Tổng lượt làm bài</p>
+                        <p id="admin-stat-total" class="text-3xl font-black text-slate-800">0</p>
+                    </div>
+                    <div class="p-3 bg-brand-50 rounded-xl text-brand-500 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/><line x1="9" y1="8" x2="10" y2="8"/></svg>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-400 font-extrabold uppercase tracking-wide">Điểm trung bình (Hệ 10)</p>
+                        <p id="admin-stat-avg" class="text-3xl font-black text-yellow-600">0.0</p>
+                    </div>
+                    <div class="p-3 bg-yellow-50 rounded-xl text-yellow-500 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-400 font-extrabold uppercase tracking-wide">Tỷ lệ Học lực Giỏi / Xuất sắc</p>
+                        <p id="admin-stat-excellent" class="text-3xl font-black text-emerald-600">0%</p>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-xl text-emerald-500 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters, Searches, and Logs controls -->
+            <div class="bg-white p-6 rounded-3xl border-2 border-slate-100 shadow-sm space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex flex-wrap items-center gap-3 flex-1">
+                        <!-- Dynamic Student Code / Name Search -->
+                        <div class="relative w-full md:max-w-xs flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-slate-400 absolute left-3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="admin-search-student" oninput="filterAdminHistory()" placeholder="Tìm Mã HS (ECO001,...) / Tên..." 
+                                   class="w-full pl-9 pr-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-slate-400 font-bold text-sm outline-none transition-all">
+                        </div>
+                        <!-- Week filter dropdown -->
+                        <select id="admin-filter-week" onchange="filterAdminHistory()" class="px-3 py-2.5 rounded-xl border-2 border-slate-200 focus:border-slate-400 font-bold text-sm outline-none bg-white">
+                            <option value="all">Tất cả các tuần</option>
+                            <option value="1">Tuần 1</option>
+                            <option value="2">Tuần 2</option>
+                            <option value="3">Tuần 3</option>
+                            <option value="4">Tuần 4</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="injectDemoSubmissions()" class="px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg> Nạp dữ liệu mẫu ECO001
+                        </button>
+                        <button onclick="clearAllSubmissions()" class="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg> Xóa tất cả
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submissions Table -->
+                <div class="overflow-x-auto rounded-2xl border border-slate-100">
+                    <table class="w-full text-left border-collapse min-w-[700px]">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 text-slate-400 font-extrabold text-xs uppercase">
+                                <th class="p-4">Mã/Tên Học Sinh</th>
+                                <th class="p-4">Bài Kiểm Tra</th>
+                                <th class="p-4 text-center">Số Câu Đúng</th>
+                                <th class="p-4 text-center">Điểm Hệ 10</th>
+                                <th class="p-4 text-center">Thời Gian Làm</th>
+                                <th class="p-4">Ngày Nộp Bài</th>
+                                <th class="p-4">Phân Loại Học Lực</th>
+                                <th class="p-4 text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-rows" class="text-sm font-bold text-slate-600 divide-y divide-slate-100">
+                            <!-- Injected rows go here -->
+                        </tbody>
+                    </table>
+                    <div id="admin-empty-state" class="hidden text-center py-12 space-y-2">
+                        <span class="text-4xl">📭</span>
+                        <p class="text-slate-400 font-extrabold">Không tìm thấy bất kỳ dữ liệu nộp bài nào thỏa mãn!</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -493,11 +608,40 @@
 
     <!-- FOOTER -->
     <footer class="bg-slate-50 border-t border-slate-200 py-6 mt-12">
-        <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
+        <div class="max-w-6xl mx-auto px-4 text-center space-y-3">
             <p class="text-xs text-slate-400 font-extrabold">Cơ sở dữ liệu bám sát Bộ Sách "Kết Nối Tri Thức Với Cuộc Sống"</p>
             <p class="text-[10px] text-slate-400 font-medium">Bản quyền phần mềm học tập tích hợp © 2026. Thiết kế sinh động cho trẻ em.</p>
+            <div>
+                <button onclick="openAdminLoginModal()" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-[11px] text-slate-500 font-bold rounded-lg border border-slate-200 transition-all flex items-center gap-1.5 mx-auto justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Quản Trị Hệ Thống (Admin)
+                </button>
+            </div>
         </div>
     </footer>
+
+    <!-- SECURE ADMIN PASSCODE LOGIN MODAL -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl border-4 border-slate-800 max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-28 h-28 bg-slate-50 rounded-full opacity-50 z-0"></div>
+            <div class="relative z-10 space-y-4">
+                <span class="text-5xl inline-block bouncy">🔐</span>
+                <h3 class="font-black text-xl text-slate-800">Cổng Quản Trị Viên</h3>
+                <p class="text-xs font-bold text-slate-400 leading-relaxed">Vui lòng nhập mật khẩu quản trị để xem danh sách nộp bài và quản lý học lực.</p>
+                
+                <input type="password" id="admin-password-input" placeholder="Nhập mật khẩu..." 
+                       class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-slate-800 text-center font-black text-lg outline-none transition-all">
+                
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <button onclick="closeAdminLoginModal()" class="py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black rounded-xl transition-colors">
+                        Hủy bỏ
+                    </button>
+                    <button onclick="submitAdminPassword()" class="py-3 bg-slate-800 hover:bg-slate-900 text-white font-black rounded-xl transition-colors shadow-md">
+                        Xác nhận
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- DYNAMIC ALERTS MODAL LAYER -->
     <div id="custom-alert-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
@@ -539,6 +683,10 @@
                 currentStage: 1, // 1 to 5
                 selectedAnswer: null,
                 completed: false
+            },
+            adminState: {
+                unlocked: false,
+                testHistory: [] // Collection of submitted test metrics
             }
         };
 
@@ -698,7 +846,7 @@
                         {
                             question: "Có 3 bàn học, mỗi bàn xếp 4 học sinh. Hỏi tất cả có bao nhiêu học sinh?",
                             options: ["12 học sinh", "7 học sinh", "10 học sinh", "16 học sinh"],
-                            answer: "12 học sinh"
+                            answer: "12"
                         }
                     ]
                 },
@@ -909,10 +1057,10 @@
 
         // DOM ELEMENTS & INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
-            // Load state from local memory if available
+            // Load state and sync history with local storage
             loadLocalProgress();
+            loadTestHistory();
             
-            lucide.createIcons();
             renderWeeksMap();
             renderLeaderboard();
             updateStatsUI();
@@ -924,7 +1072,7 @@
         // VIEW NAVIGATION
         function changeView(viewName) {
             // Hide all views
-            const views = ['welcome', 'dashboard', 'study', 'test', 'test-result', 'advanced', 'leaderboard'];
+            const views = ['welcome', 'dashboard', 'study', 'test', 'test-result', 'advanced', 'leaderboard', 'admin'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) el.classList.add('hidden');
@@ -947,6 +1095,11 @@
             // Clean up intervals if leaving test
             if (viewName !== 'test') {
                 clearInterval(state.testState.timerInterval);
+            }
+
+            // If entering Admin Dashboard, refresh data rendering
+            if (viewName === 'admin') {
+                renderAdminDashboard();
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1042,11 +1195,11 @@
                 let footerHtml = '';
                 if (isPlayable) {
                     footerHtml = `
-                        <div class="grid grid-cols-2 gap-2 mt-auto">
-                            <button onclick="event.stopPropagation(); startStudyMode(${w})" class="py-2 px-3 bg-brand-50 hover:bg-brand-100 text-brand-600 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors">
+                        <div class="grid grid-cols-2 gap-2 mt-auto text-center" onclick="event.stopPropagation();">
+                            <button onclick="startStudyMode(${w})" class="py-2 px-3 bg-brand-50 hover:bg-brand-100 text-brand-600 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors">
                                 📖 Ôn Luyện
                             </button>
-                            <button onclick="event.stopPropagation(); startTestMode(${w})" class="py-2 px-3 bg-pink-50 hover:bg-pink-100 text-pink-600 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors">
+                            <button onclick="startTestMode(${w})" class="py-2 px-3 bg-pink-50 hover:bg-pink-100 text-pink-600 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors">
                                 ⏱️ Kiểm Tra
                             </button>
                         </div>
@@ -1125,10 +1278,10 @@
                         btn.disabled = true;
                         if (opt === question.answer) {
                             btn.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-700 font-black text-sm sm:text-base flex items-center justify-between";
-                            btn.innerHTML = `<span>${opt}</span> <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>`;
+                            btn.innerHTML = `<span>${opt}</span> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-emerald-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
                         } else if (state.studyState.userSelectedAnswers[question.id] === opt) {
                             btn.className = "p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 text-rose-700 font-black text-sm sm:text-base flex items-center justify-between";
-                            btn.innerHTML = `<span>${opt}</span> <i data-lucide="x-circle" class="w-5 h-5 text-rose-500"></i>`;
+                            btn.innerHTML = `<span>${opt}</span> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-rose-500"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
                         }
                     } else {
                         btn.addEventListener('click', () => {
@@ -1180,8 +1333,6 @@
                 document.getElementById('btn-check-study').classList.remove('hidden');
                 document.getElementById('btn-next-study').classList.add('hidden');
             }
-
-            lucide.createIcons();
         }
 
         function checkStudyAnswer() {
@@ -1356,7 +1507,6 @@
                 return;
             }
 
-            // Custom non-blocking interactive confirmation alert triggers inside iframe
             submitTest(false);
         }
 
@@ -1378,25 +1528,48 @@
             let medal = "🥇";
             let msg = "Thật tuyệt vời! Con nắm kiến thức quá giỏi!";
 
+            let classification = "Yếu/Cần cố gắng 🥉";
             if (accuracy >= 1.0) {
                 medal = "👑";
                 msg = "Điểm tuyệt đối! Con chính là thiên tài Toán Học tuần này!";
                 starsEarned += 5; // Bonus for perfect score
+                classification = "Xuất sắc 👑";
             } else if (accuracy >= 0.8) {
                 medal = "🥇";
                 msg = "Xuất sắc! Con chỉ sai sót một chút xíu thôi!";
                 starsEarned += 2;
+                classification = "Giỏi 🥇";
             } else if (accuracy >= 0.6) {
                 medal = "🥈";
                 msg = "Khá lắm! Con hãy cố gắng đạt điểm cao hơn ở tuần tới nhé!";
-            } else {
-                medal = "🥉";
-                msg = "Hãy ôn tập lý thuyết thật kỹ và thử làm lại lần nữa nha!";
+                classification = "Khá 🥈";
+            } else if (accuracy >= 0.4) {
+                classification = "Trung bình 🥉";
             }
 
             // Award stars
             state.user.stars += starsEarned;
             updateStatsUI();
+
+            // Format duration/time spent
+            const timeElapsed = 600 - state.testState.timeLeft;
+            const minElapsed = Math.floor(timeElapsed / 60);
+            const secElapsed = timeElapsed % 60;
+            const durationStr = `${minElapsed.toString().padStart(2, '0')}:${secElapsed.toString().padStart(2, '0')}`;
+
+            // Create record & sync to admin database (local memory)
+            const newRecord = {
+                id: 'SUB_' + Date.now(),
+                studentName: state.user.name || "Học sinh ẩn danh",
+                weekId: state.currentWeekId,
+                score: score,
+                total: total,
+                timeSpent: durationStr,
+                date: new Date().toLocaleString('vi-VN', {hour12: false}),
+                classification: classification
+            };
+            state.adminState.testHistory.unshift(newRecord);
+            saveTestHistory();
 
             // Populate Report card page
             document.getElementById('result-medal-emoji').innerText = medal;
@@ -1649,6 +1822,204 @@
             });
         }
 
+        // ADMIN SECURE LOGIN SYSTEM
+        function openAdminLoginModal() {
+            document.getElementById('admin-password-input').value = '';
+            const modal = document.getElementById('admin-login-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.getElementById('admin-password-input').focus();
+        }
+
+        function closeAdminLoginModal() {
+            const modal = document.getElementById('admin-login-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function submitAdminPassword() {
+            const val = document.getElementById('admin-password-input').value;
+            if (val === '215151365') {
+                closeAdminLoginModal();
+                state.adminState.unlocked = true;
+                changeView('admin');
+                triggerConfetti();
+            } else {
+                showCustomAlert("❌ Sai mật khẩu!", "Mật khẩu quản trị viên không chính xác. Hãy nhập lại!");
+            }
+        }
+
+        function logoutAdmin() {
+            state.adminState.unlocked = false;
+            changeView('dashboard');
+        }
+
+        // RENDER ADMIN DASHBOARD
+        function renderAdminDashboard() {
+            const history = state.adminState.testHistory;
+            
+            // Calculate stats
+            const totalTests = history.length;
+            let avgScore = 0.0;
+            let excellentCount = 0;
+
+            if (totalTests > 0) {
+                let totalScoreScaled = 0;
+                history.forEach(item => {
+                    const scaled = (item.score / item.total) * 10;
+                    totalScoreScaled += scaled;
+                    if (item.classification.includes("Xuất sắc") || item.classification.includes("Giỏi")) {
+                        excellentCount++;
+                    }
+                });
+                avgScore = (totalScoreScaled / totalTests).toFixed(1);
+            }
+
+            const excellentPercentage = totalTests > 0 ? Math.round((excellentCount / totalTests) * 100) : 0;
+
+            // Render stats UI
+            document.getElementById('admin-stat-total').innerText = totalTests;
+            document.getElementById('admin-stat-avg').innerText = avgScore + " / 10";
+            document.getElementById('admin-stat-excellent').innerText = excellentPercentage + "%";
+
+            // Trigger table filtering rendering
+            filterAdminHistory();
+        }
+
+        // FILTER ADMIN TEST HISTORY
+        function filterAdminHistory() {
+            const query = document.getElementById('admin-search-student').value.trim().toLowerCase();
+            const weekFilter = document.getElementById('admin-filter-week').value;
+            const tableRows = document.getElementById('admin-table-rows');
+            tableRows.innerHTML = '';
+
+            const rawHistory = state.adminState.testHistory;
+            const filteredHistory = rawHistory.filter(item => {
+                const matchesSearch = item.studentName.toLowerCase().includes(query);
+                const matchesWeek = (weekFilter === 'all') || (String(item.weekId) === weekFilter);
+                return matchesSearch && matchesWeek;
+            });
+
+            if (filteredHistory.length === 0) {
+                document.getElementById('admin-empty-state').classList.remove('hidden');
+            } else {
+                document.getElementById('admin-empty-state').classList.add('hidden');
+                
+                filteredHistory.forEach(record => {
+                    const scoreScaled = ((record.score / record.total) * 10).toFixed(1);
+                    
+                    // Assign styling based on classification
+                    let classBadgeClass = "bg-rose-50 text-rose-700";
+                    if (record.classification.includes("Xuất sắc")) classBadgeClass = "bg-yellow-50 text-yellow-700 border border-yellow-200";
+                    else if (record.classification.includes("Giỏi")) classBadgeClass = "bg-emerald-50 text-emerald-700 border border-emerald-200";
+                    else if (record.classification.includes("Khá")) classBadgeClass = "bg-blue-50 text-blue-700 border border-blue-200";
+                    else if (record.classification.includes("Trung bình")) classBadgeClass = "bg-orange-50 text-orange-700 border border-orange-200";
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition-colors";
+                    tr.innerHTML = `
+                        <td class="p-4 flex items-center space-x-2">
+                            <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-base">👤</span>
+                            <span class="text-slate-800 font-extrabold">${record.studentName}</span>
+                        </td>
+                        <td class="p-4 text-slate-500 font-bold">Tuần ${record.weekId}</td>
+                        <td class="p-4 text-center text-slate-800 font-black">${record.score} / ${record.total}</td>
+                        <td class="p-4 text-center text-indigo-600 font-black">${scoreScaled}</td>
+                        <td class="p-4 text-center text-slate-500"><span class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">${record.timeSpent}</span></td>
+                        <td class="p-4 text-xs text-slate-400 font-bold">${record.date}</td>
+                        <td class="p-4">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${classBadgeClass}">
+                                ${record.classification}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center">
+                            <button onclick="deleteSubmission('${record.id}')" class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition-all flex items-center justify-center mx-auto" title="Xóa bản ghi này">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-rose-500"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                            </button>
+                        </td>
+                    `;
+                    tableRows.appendChild(tr);
+                });
+            }
+        }
+
+        // ACTIONS ON ADMIN TABLE
+        function deleteSubmission(id) {
+            state.adminState.testHistory = state.adminState.testHistory.filter(item => item.id !== id);
+            saveTestHistory();
+            renderAdminDashboard();
+        }
+
+        // CLEAR LOGS
+        function clearAllSubmissions() {
+            state.adminState.testHistory = [];
+            saveTestHistory();
+            renderAdminDashboard();
+            showCustomAlert("🧹 Đã Dọn Sạch!", "Đã xóa toàn bộ lịch sử nộp bài của học sinh thành công.");
+        }
+
+        // GENERATE INTEGRATED DEMO DATA INCLUDING ECO001
+        function injectDemoSubmissions() {
+            const demoRecords = [
+                {
+                    id: 'DEMO_1',
+                    studentName: "ECO001",
+                    weekId: 1,
+                    score: 5,
+                    total: 5,
+                    timeSpent: "03:14",
+                    date: "2026-06-20 09:12",
+                    classification: "Xuất sắc 👑"
+                },
+                {
+                    id: 'DEMO_2',
+                    studentName: "ECO001",
+                    weekId: 2,
+                    score: 4,
+                    total: 5,
+                    timeSpent: "05:42",
+                    date: "2026-06-20 09:30",
+                    classification: "Giỏi 🥇"
+                },
+                {
+                    id: 'DEMO_3',
+                    studentName: "Nguyễn Minh Khang",
+                    weekId: 1,
+                    score: 3,
+                    total: 5,
+                    timeSpent: "06:12",
+                    date: "2026-06-19 14:15",
+                    classification: "Khá 🥈"
+                },
+                {
+                    id: 'DEMO_4',
+                    studentName: "ECO002",
+                    weekId: 1,
+                    score: 4,
+                    total: 5,
+                    timeSpent: "04:55",
+                    date: "2026-06-19 16:42",
+                    classification: "Giỏi 🥇"
+                },
+                {
+                    id: 'DEMO_5',
+                    studentName: "Trần Mai Chi",
+                    weekId: 3,
+                    score: 5,
+                    total: 5,
+                    timeSpent: "02:40",
+                    date: "2026-06-20 11:05",
+                    classification: "Xuất sắc 👑"
+                }
+            ];
+
+            state.adminState.testHistory = [...demoRecords, ...state.adminState.testHistory];
+            saveTestHistory();
+            renderAdminDashboard();
+            triggerConfetti();
+            showCustomAlert("📊 Đã Tạo Dữ Liệu!", "Hệ thống đã nạp thành công 5 bản ghi thử nghiệm bao gồm học sinh mã 'ECO001'.");
+        }
+
         // CONFETTI CELEBRATION
         function triggerConfetti() {
             try {
@@ -1670,12 +2041,14 @@
 
             // Setup emojis accordingly
             const emojiEl = document.getElementById('alert-emoji');
-            if (title.includes("Tuyệt") || title.includes("chính xác") || title.includes("Hoàn") || title.includes("Leo")) {
+            if (title.includes("Tuyệt") || title.includes("chính xác") || title.includes("Hoàn") || title.includes("Leo") || title.includes("Tạo")) {
                 emojiEl.innerText = "🎉";
-            } else if (title.includes("Tiếc") || title.includes("Chưa")) {
+            } else if (title.includes("Tiếc") || title.includes("Chưa") || title.includes("Sai")) {
                 emojiEl.innerText = "💪";
             } else if (title.includes("Còn") || title.includes("trống")) {
                 emojiEl.innerText = "📝";
+            } else if (title.includes("Dọn")) {
+                emojiEl.innerText = "🧹";
             } else {
                 emojiEl.innerText = "💡";
             }
@@ -1696,10 +2069,11 @@
             try {
                 localStorage.setItem('toan3_kntt_user', JSON.stringify(state.user));
             } catch (err) {
-                console.error("Could not write to local storage", err);
+                console.error("Could not write user to local storage", err);
             }
         }
 
+        // LOAD PROGRESS
         function loadLocalProgress() {
             try {
                 const raw = localStorage.getItem('toan3_kntt_user');
@@ -1713,7 +2087,29 @@
                     }
                 }
             } catch (err) {
-                console.error("Could not read from local storage", err);
+                console.error("Could not read user from local storage", err);
+            }
+        }
+
+        function saveTestHistory() {
+            try {
+                localStorage.setItem('toan3_kntt_history', JSON.stringify(state.adminState.testHistory));
+            } catch (err) {
+                console.error("Could not write test history to local storage", err);
+            }
+        }
+
+        function loadTestHistory() {
+            try {
+                const raw = localStorage.getItem('toan3_kntt_history');
+                if (raw) {
+                    state.adminState.testHistory = JSON.parse(raw);
+                } else {
+                    // Inject basic seed data on fresh run so dashboard is not dry
+                    injectDemoSubmissions();
+                }
+            } catch (err) {
+                console.error("Could not read history from local storage", err);
             }
         }
     </script>
