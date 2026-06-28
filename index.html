@@ -3,7 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toán Lớp 3 - Kết Nối Tri Thức & Quản Trị Admin</title>
+    <title>Toán Lớp 3 - Tích Hợp Đám Mây Real-time</title>
+
+    <!-- HỘP BẢO VỆ CHỐNG LỖI GETBOUNDINGCLIENTRECT TRONG SANDBOX IFRAME NÂNG CAO -->
+    <script>
+        (function() {
+            const safeFn = function() {
+                return { top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0, x: 0, y: 0 };
+            };
+            try {
+                if (typeof Object !== 'undefined') {
+                    Object.defineProperty(Object.prototype, 'getBoundingClientRect', {
+                        get: function() {
+                            return safeFn;
+                        },
+                        set: function(val) {
+                            Object.defineProperty(this, 'getBoundingClientRect', {
+                                value: val,
+                                writable: true,
+                                configurable: true,
+                                enumerable: true
+                            });
+                        },
+                        configurable: true
+                    });
+                }
+                
+                const classes = [
+                    typeof Node !== 'undefined' ? Node : null,
+                    typeof Element !== 'undefined' ? Element : null,
+                    typeof HTMLElement !== 'undefined' ? HTMLElement : null,
+                    typeof SVGElement !== 'undefined' ? SVGElement : null,
+                    typeof Document !== 'undefined' ? Document : null,
+                    typeof Window !== 'undefined' ? Window : null
+                ];
+                
+                classes.forEach(cls => {
+                    if (cls && cls.prototype && !cls.prototype.getBoundingClientRect) {
+                        try {
+                            Object.defineProperty(cls.prototype, 'getBoundingClientRect', {
+                                value: safeFn,
+                                writable: true,
+                                configurable: true,
+                                enumerable: true
+                            });
+                        } catch (e) {}
+                    }
+                });
+            } catch (e) {
+                console.warn("Safety guard for getBoundingClientRect could not be applied:", e);
+            }
+        })();
+    </script>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -14,6 +66,8 @@
                         brand: {
                             50: '#f0f9ff',
                             100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
                             400: '#38bdf8',
                             500: '#0ea5e9',
                             600: '#0284c7',
@@ -51,14 +105,6 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); }
         }
-        .shake-on-correct {
-            animation: shake 0.5s ease-in-out;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-4px); }
-            75% { transform: translateX(4px); }
-        }
     </style>
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col selection:bg-brand-100 selection:text-brand-700">
@@ -73,7 +119,7 @@
                 </div>
                 <div class="hidden sm:block">
                     <h1 class="text-lg font-black text-brand-600 leading-tight">Kết Nối Tri Thức</h1>
-                    <p class="text-xs text-slate-400 font-bold">Hành Trình Kỳ Thú</p>
+                    <p class="text-xs text-slate-400 font-bold">Hành Trình Kỳ Thú (Cloud Mode)</p>
                 </div>
             </button>
 
@@ -188,7 +234,7 @@
                         <h3 class="font-black text-slate-700 text-lg flex items-center gap-2">
                             🗺️ Bản Đồ Bài Học Kỳ Thú
                         </h3>
-                        <span class="bg-brand-100 text-brand-700 font-bold px-3 py-1 rounded-full text-xs">Học Kỳ 1</span>
+                        <span class="bg-brand-100 text-brand-700 font-bold px-3 py-1 rounded-full text-xs">Hành Trình Học Tập</span>
                     </div>
 
                     <!-- Grid of Weeks -->
@@ -484,12 +530,12 @@
                     </button>
                     <h2 class="font-black text-slate-800 text-lg">🏆 Bảng Vàng Thành Tích</h2>
                 </div>
-                <span class="text-xs text-indigo-600 font-extrabold bg-indigo-50 px-2.5 py-1 rounded-full">Toàn quốc</span>
+                <span class="text-xs text-indigo-600 font-extrabold bg-indigo-50 px-2.5 py-1 rounded-full">Trực tuyến (Cloud)</span>
             </div>
 
             <!-- Standings list -->
             <div class="bg-white rounded-3xl border-4 border-indigo-400 p-5 shadow-lg space-y-4">
-                <p class="text-xs text-slate-400 font-extrabold text-center uppercase tracking-wider">Cập nhật mới nhất</p>
+                <p class="text-xs text-slate-400 font-extrabold text-center uppercase tracking-wider">Cập nhật thời gian thực</p>
                 <div id="leaderboard-list" class="space-y-2.5">
                     <!-- Dynamic standing rows -->
                 </div>
@@ -521,7 +567,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-sm flex items-center justify-between">
                     <div>
-                        <p class="text-xs text-slate-400 font-extrabold uppercase tracking-wide">Tổng lượt làm bài</p>
+                        <p class="text-xs text-slate-400 font-extrabold uppercase tracking-wide">Tổng lượt làm bài (Cloud)</p>
                         <p id="admin-stat-total" class="text-3xl font-black text-slate-800">0</p>
                     </div>
                     <div class="p-3 bg-brand-50 rounded-xl text-brand-500 flex items-center justify-center">
@@ -545,6 +591,31 @@
                     <div class="p-3 bg-emerald-50 rounded-xl text-emerald-500 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
                     </div>
+                </div>
+            </div>
+
+            <!-- WEEK LOCK/UNLOCK CONTROL PANEL -->
+            <div class="bg-white p-6 rounded-3xl border-2 border-slate-100 shadow-sm space-y-4">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">🔓</span>
+                    <div>
+                        <h3 class="font-black text-slate-800 text-lg leading-tight">Quản Lý Trạng Thế Khóa/Mở Khóa Bài Học (Cloud Sync)</h3>
+                        <p class="text-xs text-slate-400 font-bold">Lập tức thay đổi quyền truy cập của học sinh trong thời gian thực</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <div class="flex items-center space-x-2 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200">
+                        <span class="text-xs font-extrabold text-slate-500 uppercase">Mở khóa đến hết:</span>
+                        <select id="admin-max-week-select" onchange="updateMaxPlayableWeek(this.value)" class="bg-white border-2 border-slate-200 text-slate-700 font-black text-sm px-2.5 py-1 rounded-lg outline-none focus:border-brand-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <button onclick="unlockAllWeeks()" class="px-5 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm rounded-xl transition-all shadow-sm hover:shadow flex items-center gap-1.5 justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Mở khóa Toàn bộ 35 Tuần
+                    </button>
+                    <button onclick="resetWeeksLock()" class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-xs sm:text-sm rounded-xl transition-all flex items-center gap-1.5 justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg> Khóa Lại (Chỉ mở 4 Tuần đầu)
+                    </button>
                 </div>
             </div>
 
@@ -655,9 +726,32 @@
         </div>
     </div>
 
-    <!-- CORE LOGIC / JAVASCRIPT -->
-    <script>
-        // GLOBAL STATE
+    <!-- Firebase SDK Modules Tích Hợp Đám Mây -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // CẤU HÌNH FIREBASE NGƯỜI DÙNG CUNG CẤP CHUẨN XÁC
+        const firebaseConfig = {
+            apiKey: "AIzaSyDnQgNNqtlvDVZ3UGxnojU4kGjYSyMhdZ4",
+            authDomain: "toan-lop-3.firebaseapp.com",
+            projectId: "toan-lop-3",
+            storageBucket: "toan-lop-3.firebasestorage.app",
+            messagingSenderId: "520817149577",
+            appId: "1:520817149577:web:fb77e4fa6cf88091686858",
+            measurementId: "G-D9M3YJ9RH1"
+        };
+
+        // Biến môi trường
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'toan-lop-3';
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let user = null;
+
+        // GLOBAL APPLICATION STATE
         const state = {
             user: {
                 name: "Bạn nhỏ",
@@ -670,24 +764,25 @@
             currentWeekId: 1,
             studyState: {
                 activeQuestionIndex: 0,
-                answersChecked: {}, // Tracked by question ID
-                userSelectedAnswers: {}, // Storing choices
+                answersChecked: {},
+                userSelectedAnswers: {},
             },
             testState: {
                 activeQuestionIndex: 0,
-                userAnswers: {}, // key: questionIndex, value: selectedOption/text
-                timeLeft: 600, // 10 minutes in seconds
+                userAnswers: {},
+                timeLeft: 600,
                 timerInterval: null
             },
             advancedState: {
-                currentStage: 1, // 1 to 5
+                currentStage: 1,
                 selectedAnswer: null,
                 completed: false
             },
             adminState: {
                 unlocked: false,
-                testHistory: [] // Collection of submitted test metrics
-            }
+                testHistory: []
+            },
+            maxPlayableWeek: 4
         };
 
         // Static Mock Data bám sát SGK Kết nối tri thức Lớp 3
@@ -1055,34 +1150,135 @@
             ]
         };
 
-        // DOM ELEMENTS & INITIALIZATION
-        window.addEventListener('DOMContentLoaded', () => {
-            // Load state and sync history with local storage
-            loadLocalProgress();
-            loadTestHistory();
-            
-            renderWeeksMap();
-            renderLeaderboard();
-            updateStatsUI();
+        // FIRESTORE PATH REFERENCES (Tuân thủ luật thiết lập PATHS nghiêm ngặt)
+        const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+        const configDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'settings');
+        const globalScoresRef = collection(db, 'artifacts', appId, 'public', 'data', 'scores');
 
-            // Setup Companion selection default
-            selectCompanion('rabbit');
+        // CHẠY HỆ THỐNG XÁC THỰC AN TOÀN TRƯỚC (RULE 3)
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (e) {
+                console.warn("Lỗi đăng nhập Firebase:", e);
+            }
+        };
+
+        // KHI ĐĂNG NHẬP THÀNH CÔNG -> THEO DÕI THỜI GIAN THỰC (REAL-TIME SNAPSHOT LISTENERS)
+        onAuthStateChanged(auth, async (u) => {
+            if (u) {
+                user = u;
+                console.log("Xác thực đám mây hoàn tất. User UID:", user.uid);
+                
+                // Đồng bộ Profile Học sinh
+                await syncUserProfile();
+
+                // 1. Thống kê bài tập / Lịch sử làm bài (Admin)
+                onSnapshot(submissionsRef, (snapshot) => {
+                    const history = [];
+                    snapshot.forEach(docSnap => {
+                        history.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    // Tránh complex queries trên server -> Sắp xếp thủ công tại JS Client (RULE 2)
+                    history.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                    state.adminState.testHistory = history;
+                    if (state.currentView === 'admin') {
+                        renderAdminDashboard();
+                    }
+                }, (err) => console.warn("Lỗi Real-time Submissions:", err));
+
+                // 2. Đồng bộ trạng thái KHÓA/MỞ khóa tuần học (Admin & Student)
+                onSnapshot(configDocRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        state.maxPlayableWeek = docSnap.data().maxPlayableWeek || 4;
+                    } else {
+                        state.maxPlayableWeek = 4;
+                    }
+                    renderWeeksMap();
+                }, (err) => console.warn("Lỗi Real-time Config:", err));
+
+                // 3. Đồng bộ Bảng vàng danh dự trực tuyến (Leaderboard)
+                onSnapshot(globalScoresRef, (snapshot) => {
+                    const board = [];
+                    snapshot.forEach(docSnap => {
+                        board.push(docSnap.data());
+                    });
+                    
+                    // Ghép các bản ghi tĩnh của hệ thống và lọc trùng
+                    const combined = [...board];
+                    contentData.leaderboard.forEach(staticMember => {
+                        if (!combined.some(live => live.name === staticMember.name)) {
+                            combined.push(staticMember);
+                        }
+                    });
+
+                    // Sắp xếp theo số sao giảm dần
+                    combined.sort((a, b) => b.stars - a.stars);
+                    renderLeaderboardWithData(combined.slice(0, 10));
+                }, (err) => console.warn("Lỗi Real-time Leaderboard:", err));
+
+            }
         });
 
-        // VIEW NAVIGATION
+        // ĐỒNG BỘ PROFILE CÁ NHÂN HỌC SINH TỪ FIRESTORE
+        const syncUserProfile = async () => {
+            if (!user) return;
+            const profileRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'state');
+            try {
+                const docSnap = await getDoc(profileRef);
+                if (docSnap.exists()) {
+                    state.user = { ...state.user, ...docSnap.data() };
+                    updateStatsUI();
+                    if (state.user.stars > 0 && state.currentView === 'welcome') {
+                        changeView('dashboard');
+                    }
+                } else {
+                    await saveUserProfileToCloud();
+                }
+            } catch (e) {
+                console.warn("Lỗi đồng bộ hồ sơ:", e);
+            }
+        };
+
+        const saveUserProfileToCloud = async () => {
+            if (!user) return;
+            const profileRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'state');
+            const scorePublicRef = doc(db, 'artifacts', appId, 'public', 'data', 'scores', user.uid);
+            
+            const payload = {
+                name: state.user.name,
+                avatar: state.user.avatar,
+                stars: state.user.stars,
+                trophies: state.user.trophies,
+                companion: state.user.companion,
+                timestamp: Date.now()
+            };
+
+            try {
+                // Lưu hồ sơ cá nhân riêng tư
+                await setDoc(profileRef, payload, { merge: true });
+                // Lưu điểm số lên bảng công cộng để làm Leaderboard
+                await setDoc(scorePublicRef, payload, { merge: true });
+            } catch (e) {
+                console.warn("Lỗi lưu trữ dữ liệu đám mây:", e);
+            }
+        };
+
+        // VIEW ENGINE
         function changeView(viewName) {
-            // Hide all views
             const views = ['welcome', 'dashboard', 'study', 'test', 'test-result', 'advanced', 'leaderboard', 'admin'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) el.classList.add('hidden');
             });
 
-            // Show target view
             const targetEl = document.getElementById(`view-${viewName}`);
             if (targetEl) targetEl.classList.remove('hidden');
 
-            // Manage header visibility
             const headerStats = document.getElementById('header-stats');
             if (viewName === 'welcome') {
                 headerStats.classList.add('hidden');
@@ -1092,12 +1288,10 @@
 
             state.currentView = viewName;
             
-            // Clean up intervals if leaving test
             if (viewName !== 'test') {
                 clearInterval(state.testState.timerInterval);
             }
 
-            // If entering Admin Dashboard, refresh data rendering
             if (viewName === 'admin') {
                 renderAdminDashboard();
             }
@@ -1105,11 +1299,8 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // COMPANION SELECTION
         function selectCompanion(companionType) {
             state.user.companion = companionType;
-            
-            // Update cards selection styling
             const cards = document.querySelectorAll('.companion-card');
             cards.forEach(card => {
                 card.classList.remove('border-brand-500', 'bg-brand-50', 'ring-4', 'ring-brand-100');
@@ -1122,7 +1313,6 @@
                 selectedCard.classList.add('border-brand-500', 'bg-brand-50', 'ring-4', 'ring-brand-100');
             }
 
-            // Set emoji
             if (companionType === 'rabbit') {
                 state.user.avatar = "🐰";
                 state.user.name = "Thỏ Thông Thái";
@@ -1135,41 +1325,40 @@
             }
         }
 
-        // START APP FROM WELCOME
-        function startApp() {
+        async function startApp() {
             const nicknameInput = document.getElementById('input-nickname').value.trim();
             if (nicknameInput) {
                 state.user.name = nicknameInput;
             }
 
-            // Sync user UI
             document.getElementById('header-user-avatar').innerText = state.user.avatar;
             document.getElementById('header-user-name').innerText = state.user.name;
             document.getElementById('dash-user-name').innerText = state.user.name;
             document.getElementById('mascot-avatar').innerText = state.user.avatar;
             document.getElementById('mascot-speech').innerText = `"Chào ${state.user.name} nhé! Tớ sẽ đồng hành cùng cậu chinh phục mọi nẻo đường Toán học. Nhấp vào các tuần học để khởi động ngay nào!"`;
 
-            saveLocalProgress();
+            await saveUserProfileToCloud();
             updateStatsUI();
             changeView('dashboard');
             triggerConfetti();
         }
 
-        // UPDATE STATS HEADER
         function updateStatsUI() {
             document.getElementById('stat-stars').innerText = state.user.stars;
             document.getElementById('stat-trophies').innerText = state.user.trophies;
-            renderLeaderboard();
+            document.getElementById('header-user-avatar').innerText = state.user.avatar;
+            document.getElementById('header-user-name').innerText = state.user.name;
+            document.getElementById('dash-user-name').innerText = state.user.name;
+            document.getElementById('mascot-avatar').innerText = state.user.avatar;
         }
 
-        // RENDER WEEKS MAP ON DASHBOARD
         function renderWeeksMap() {
             const weeksGrid = document.getElementById('weeks-grid');
+            if (!weeksGrid) return;
             weeksGrid.innerHTML = '';
 
-            // Render 35 weeks (some interactive, others locked demo)
             for (let w = 1; w <= 35; w++) {
-                const isPlayable = w <= 4; // Interactive demo covers first month
+                const isPlayable = w <= state.maxPlayableWeek; 
                 const weekData = contentData.weeks.find(x => x.id === w);
                 
                 const weekCard = document.createElement('div');
@@ -1194,16 +1383,24 @@
 
                 let footerHtml = '';
                 if (isPlayable) {
-                    footerHtml = `
-                        <div class="grid grid-cols-2 gap-2 mt-auto text-center" onclick="event.stopPropagation();">
-                            <button onclick="startStudyMode(${w})" class="py-2 px-3 bg-brand-50 hover:bg-brand-100 text-brand-600 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors">
-                                📖 Ôn Luyện
-                            </button>
-                            <button onclick="startTestMode(${w})" class="py-2 px-3 bg-pink-50 hover:bg-pink-100 text-pink-600 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors">
-                                ⏱️ Kiểm Tra
-                            </button>
-                        </div>
-                    `;
+                    if (weekData) {
+                        footerHtml = `
+                            <div class="grid grid-cols-2 gap-2 mt-auto text-center" onclick="event.stopPropagation();">
+                                <button onclick="window.startStudyMode(${w})" class="py-2 px-3 bg-brand-50 hover:bg-brand-100 text-brand-600 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors">
+                                    📖 Ôn Luyện
+                                </button>
+                                <button onclick="window.startTestMode(${w})" class="py-2 px-3 bg-pink-50 hover:bg-pink-100 text-pink-600 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors">
+                                    ⏱️ Kiểm Tra
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        footerHtml = `
+                            <div class="text-center text-slate-500 text-xs font-bold py-2 border border-dashed border-slate-300 rounded-xl">
+                                Đang soạn câu đố...
+                            </div>
+                        `;
+                    }
                 } else {
                     footerHtml = `
                         <div class="text-center text-slate-400 text-xs font-bold py-2 border border-dashed border-slate-300 rounded-xl">
@@ -1213,7 +1410,7 @@
                 }
 
                 weekCard.innerHTML = headerHtml + titleHtml + footerHtml;
-                if (isPlayable) {
+                if (isPlayable && weekData) {
                     weekCard.addEventListener('click', () => {
                         startStudyMode(w);
                     });
@@ -1222,7 +1419,6 @@
             }
         }
 
-        // STUDY MODE ENGINE
         function startStudyMode(weekId) {
             state.currentWeekId = weekId;
             const weekData = contentData.weeks.find(x => x.id === weekId);
@@ -1231,7 +1427,6 @@
             document.getElementById('study-week-title').innerText = weekData.title;
             document.getElementById('theory-content').innerHTML = weekData.theory;
 
-            // Reset study state for this session
             state.studyState.activeQuestionIndex = 0;
             state.studyState.answersChecked = {};
             state.studyState.userSelectedAnswers = {};
@@ -1245,7 +1440,6 @@
             const qIndex = state.studyState.activeQuestionIndex;
             const question = weekData.revisionQuestions[qIndex];
 
-            // Progress text updates
             document.getElementById('study-progress-text').innerText = `${qIndex + 1} / ${weekData.revisionQuestions.length}`;
             const percent = ((qIndex + 1) / weekData.revisionQuestions.length) * 100;
             document.getElementById('study-progress-bar').style.width = `${percent}%`;
@@ -1253,13 +1447,11 @@
             const box = document.getElementById('study-question-box');
             box.innerHTML = '';
 
-            // Question prompt
             const qTitle = document.createElement('h4');
             qTitle.className = "font-black text-slate-700 text-base sm:text-lg leading-relaxed flex items-start gap-2";
             qTitle.innerHTML = `<span class="bg-brand-500 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs flex-shrink-0 mt-0.5">${qIndex + 1}</span> <span>${question.question}</span>`;
             box.appendChild(qTitle);
 
-            // Answer widget rendering
             if (question.type === 'mcq') {
                 const optionsGrid = document.createElement('div');
                 optionsGrid.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4";
@@ -1273,7 +1465,6 @@
                     }`;
                     btn.innerHTML = `<span>${opt}</span> <div class="w-5 h-5 rounded-full border-2 border-slate-300 flex items-center justify-center"><div class="w-2.5 h-2.5 rounded-full bg-brand-500 transform scale-0 transition-transform"></div></div>`;
                     
-                    // If checked, style properly
                     if (state.studyState.answersChecked[question.id]) {
                         btn.disabled = true;
                         if (opt === question.answer) {
@@ -1289,12 +1480,10 @@
                             loadStudyQuestion();
                         });
                     }
-
                     optionsGrid.appendChild(btn);
                 });
                 box.appendChild(optionsGrid);
             } else if (question.type === 'fill') {
-                // Fill-in-the-blank text field
                 const fillContainer = document.createElement('div');
                 fillContainer.className = "mt-4 max-w-xs space-y-3";
 
@@ -1321,7 +1510,6 @@
                 box.appendChild(fillContainer);
             }
 
-            // Explanatory area control
             const explBox = document.getElementById('study-explanation-box');
             if (state.studyState.answersChecked[question.id]) {
                 explBox.classList.remove('hidden');
@@ -1335,7 +1523,7 @@
             }
         }
 
-        function checkStudyAnswer() {
+        async function checkStudyAnswer() {
             const weekData = contentData.weeks.find(x => x.id === state.currentWeekId);
             const qIndex = state.studyState.activeQuestionIndex;
             const question = weekData.revisionQuestions[qIndex];
@@ -1348,7 +1536,6 @@
 
             state.studyState.answersChecked[question.id] = true;
 
-            // Determine if correct
             let correct = false;
             if (question.type === 'mcq') {
                 correct = userAns === question.answer;
@@ -1357,7 +1544,8 @@
             }
 
             if (correct) {
-                state.user.stars += 2; // +2 stars per revision correct answer
+                state.user.stars += 2;
+                await saveUserProfileToCloud();
                 updateStatsUI();
                 triggerConfetti();
                 showCustomAlert("🎉 Tuyệt vời!", "Con đã trả lời chính xác và nhận được +2 ⭐!", "🎯 Chúc mừng");
@@ -1365,7 +1553,6 @@
                 showCustomAlert("😢 Tiếc quá!", "Đáp án chưa đúng rồi. Đọc kỹ lời giải chi tiết bên dưới nhé!", "💪 Cố lên");
             }
 
-            saveLocalProgress();
             loadStudyQuestion();
         }
 
@@ -1377,7 +1564,6 @@
                 state.studyState.activeQuestionIndex = targetIndex;
                 loadStudyQuestion();
             } else if (targetIndex >= weekData.revisionQuestions.length) {
-                // Session finished
                 showCustomAlert("🏆 Hoàn Thành!", `Con đã xuất sắc hoàn thành buổi Ôn Luyện Tuần ${state.currentWeekId}! Trở về bản đồ để chinh phục bài thi tính giờ nhé.`, "🌟 Chúc mừng");
                 changeView('dashboard');
             }
@@ -1391,22 +1577,19 @@
 
             document.getElementById('test-week-title').innerText = `Bài kiểm tra: Tuần ${weekId}`;
             
-            // Clean slate
             state.testState.activeQuestionIndex = 0;
             state.testState.userAnswers = {};
-            state.testState.timeLeft = 600; // 10 minutes
+            state.testState.timeLeft = 600;
 
-            // Setup indicators
             renderTestIndicators();
             loadTestQuestion();
 
-            // Run clock timer
             clearInterval(state.testState.timerInterval);
             state.testState.timerInterval = setInterval(() => {
                 state.testState.timeLeft--;
                 if (state.testState.timeLeft <= 0) {
                     clearInterval(state.testState.timerInterval);
-                    submitTest(true); // Auto force-submit
+                    submitTest(true);
                 } else {
                     updateTestClock();
                 }
@@ -1425,6 +1608,7 @@
 
         function renderTestIndicators() {
             const container = document.getElementById('test-indicators');
+            if (!container) return;
             container.innerHTML = '';
 
             const weekData = contentData.weeks.find(x => x.id === state.currentWeekId);
@@ -1452,19 +1636,16 @@
             const qIndex = state.testState.activeQuestionIndex;
             const question = weekData.testQuestions[qIndex];
 
-            // Re-draw indicators to highlight active
             renderTestIndicators();
 
             const box = document.getElementById('test-question-box');
             box.innerHTML = '';
 
-            // Layout question
             const qText = document.createElement('h3');
             qText.className = "font-black text-slate-700 text-base sm:text-lg leading-relaxed";
             qText.innerHTML = `<span class="bg-pink-500 text-white px-2 py-1 rounded-lg text-xs font-black mr-2">Câu ${qIndex + 1}</span> ${question.question}`;
             box.appendChild(qText);
 
-            // Render options (always MCQ style for official test mode for child engagement)
             const grid = document.createElement('div');
             grid.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4";
 
@@ -1481,7 +1662,6 @@
                     state.testState.userAnswers[qIndex] = opt;
                     loadTestQuestion();
                 });
-
                 grid.appendChild(btn);
             });
             box.appendChild(grid);
@@ -1498,7 +1678,6 @@
         }
 
         function confirmSubmitTest() {
-            // Check if user answered everything
             const weekData = contentData.weeks.find(x => x.id === state.currentWeekId);
             const answeredCount = Object.keys(state.testState.userAnswers).length;
             
@@ -1510,7 +1689,7 @@
             submitTest(false);
         }
 
-        function submitTest(isForceSubmitted = false) {
+        async function submitTest(isForceSubmitted = false) {
             clearInterval(state.testState.timerInterval);
             const weekData = contentData.weeks.find(x => x.id === state.currentWeekId);
             
@@ -1521,10 +1700,9 @@
                 }
             });
 
-            // Calculate metrics & awards
             const total = weekData.testQuestions.length;
             const accuracy = score / total;
-            let starsEarned = score * 2; // +2 stars per correct answer on exam
+            let starsEarned = score * 2;
             let medal = "🥇";
             let msg = "Thật tuyệt vời! Con nắm kiến thức quá giỏi!";
 
@@ -1532,7 +1710,7 @@
             if (accuracy >= 1.0) {
                 medal = "👑";
                 msg = "Điểm tuyệt đối! Con chính là thiên tài Toán Học tuần này!";
-                starsEarned += 5; // Bonus for perfect score
+                starsEarned += 5;
                 classification = "Xuất sắc 👑";
             } else if (accuracy >= 0.8) {
                 medal = "🥇";
@@ -1547,37 +1725,40 @@
                 classification = "Trung bình 🥉";
             }
 
-            // Award stars
             state.user.stars += starsEarned;
             updateStatsUI();
 
-            // Format duration/time spent
             const timeElapsed = 600 - state.testState.timeLeft;
             const minElapsed = Math.floor(timeElapsed / 60);
             const secElapsed = timeElapsed % 60;
             const durationStr = `${minElapsed.toString().padStart(2, '0')}:${secElapsed.toString().padStart(2, '0')}`;
 
-            // Create record & sync to admin database (local memory)
-            const newRecord = {
-                id: 'SUB_' + Date.now(),
+            // Tải dữ liệu nộp bài lên CLOUD FIRESTORE
+            const cloudRecord = {
                 studentName: state.user.name || "Học sinh ẩn danh",
                 weekId: state.currentWeekId,
                 score: score,
                 total: total,
                 timeSpent: durationStr,
                 date: new Date().toLocaleString('vi-VN', {hour12: false}),
-                classification: classification
+                classification: classification,
+                timestamp: Date.now()
             };
-            state.adminState.testHistory.unshift(newRecord);
-            saveTestHistory();
 
-            // Populate Report card page
+            try {
+                if (user) {
+                    await addDoc(submissionsRef, cloudRecord);
+                    await saveUserProfileToCloud();
+                }
+            } catch (e) {
+                console.warn("Lỗi đồng bộ nộp bài lên Cloud:", e);
+            }
+
             document.getElementById('result-medal-emoji').innerText = medal;
             document.getElementById('result-message').innerText = msg;
             document.getElementById('result-correct-ratio').innerText = `${score} / ${total}`;
             document.getElementById('result-stars-awarded').innerText = `+${starsEarned} ⭐`;
 
-            // Draw rating stars UI
             const ratingStarsBox = document.getElementById('result-stars');
             ratingStarsBox.innerHTML = '';
             for (let s = 1; s <= 5; s++) {
@@ -1593,12 +1774,11 @@
                 ratingStarsBox.appendChild(starSpan);
             }
 
-            saveLocalProgress();
             changeView('test-result');
             triggerConfetti();
         }
 
-        // ADVANCED MODE ENGINE (Chinh Phục Đỉnh Núi)
+        // ADVANCED MODE ENGINE
         function startAdvancedMode() {
             state.advancedState.currentStage = 1;
             state.advancedState.selectedAnswer = null;
@@ -1610,11 +1790,10 @@
 
         function renderClimbNodes() {
             const container = document.getElementById('climb-nodes');
+            if (!container) return;
             container.innerHTML = '';
 
             const current = state.advancedState.currentStage;
-            
-            // Generate visual coordinate layout offsets for 5 nodes along the path
             const pathCoordinates = [
                 { bottom: '15%', left: '10%' },
                 { bottom: '32%', left: '35%' },
@@ -1659,7 +1838,6 @@
             const area = document.getElementById('adv-question-area');
             area.innerHTML = '';
 
-            // Setup custom speeches depending on progress
             const speechBubbles = [
                 "Cùng vượt qua thử thách đầu tiên để thăng cấp nhé!",
                 "Hãy nhắm thẳng tới nấc tiếp theo, nỗ lực xuất sắc!",
@@ -1669,13 +1847,11 @@
             ];
             document.getElementById('climb-helper-speech').innerText = speechBubbles[stage - 1];
 
-            // Question Text
             const title = document.createElement('h3');
             title.className = "font-black text-slate-700 text-lg leading-relaxed p-4 bg-indigo-50 border border-indigo-100 rounded-2xl";
             title.innerHTML = puzzle.question;
             area.appendChild(title);
 
-            // Interactive Input/Options for puzzles
             if (puzzle.type === 'mcq') {
                 const grid = document.createElement('div');
                 grid.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4";
@@ -1693,7 +1869,6 @@
                         state.advancedState.selectedAnswer = opt;
                         loadAdvancedQuestion();
                     });
-
                     grid.appendChild(btn);
                 });
                 area.appendChild(grid);
@@ -1720,13 +1895,12 @@
                 area.appendChild(container);
             }
 
-            // Tip Box visibility setup
             const tipBox = document.getElementById('adv-tip-box');
             tipBox.classList.remove('hidden');
             document.getElementById('adv-tip-text').innerHTML = `💡 <strong>Mách nhỏ từ Thỏ:</strong> ${puzzle.hint}`;
         }
 
-        function checkAdvancedAnswer() {
+        async function checkAdvancedAnswer() {
             const stage = state.advancedState.currentStage;
             const puzzle = contentData.advanced[stage - 1];
             const ans = state.advancedState.selectedAnswer;
@@ -1745,7 +1919,7 @@
 
             if (correct) {
                 triggerConfetti();
-                state.user.stars += 5; // Extra juicy reward stars
+                state.user.stars += 5;
 
                 if (stage < 5) {
                     showCustomAlert("🧗 Leo Lên Tiếp!", "Thật không tin nổi! Con siêu thật đó. Chinh phục nấc thang tiếp theo nào! (+5 ⭐)", "✨ Cực kỳ xuất sắc");
@@ -1753,54 +1927,33 @@
                     state.advancedState.selectedAnswer = null;
                     loadAdvancedQuestion();
                 } else {
-                    // REACHED SUMMIT
-                    state.user.trophies++; // Recieve golden trophy
-                    showCustomAlert("👑 CHẠM ĐỈNH VINH QUANG!", "Con đã trả lời chính xác tất cả các bài Toán Tư Duy hóc búa nhất và đạt được CÚP VÀNG danh giá! Hãy khoe ngay thành tích này với bố mẹ nhé! (+5 ⭐, +1 🏆)", "🏆 THẦN ĐỒNG TOÁN HỌC");
+                    state.user.trophies++;
+                    showCustomAlert("👑 CHẠM ĐỈNH VINH QUANG!", "Con đã trả lời chính xác tất cả các bài Toán Tư Duy hóc búa nhất và đạt được CÚP VÀNG danh giá! (+5 ⭐, +1 🏆)", "🏆 THẦN ĐỒNG TOÁN HỌC");
                     changeView('dashboard');
                 }
             } else {
                 showCustomAlert("❌ Chưa Đúng rồi!", "Ôi không, câu trả lời chưa đúng rồi. Hãy đọc kỹ gợi ý 'Mách nhỏ từ Thỏ' và thử suy luận lại xem sao nhé!", "💪 Hãy thử lại");
             }
 
-            saveLocalProgress();
+            await saveUserProfileToCloud();
             updateStatsUI();
         }
 
-        // RENDER LEADERBOARD (Bảng Vàng)
-        function renderLeaderboard() {
+        // LEADERBOARD WITH INCOMING REAL-TIME DATA
+        function renderLeaderboardWithData(listData) {
             const list = document.getElementById('leaderboard-list');
+            if (!list) return;
             list.innerHTML = '';
 
-            // Generate temporary standings array including user
-            const standList = [...contentData.leaderboard];
-            
-            // Check if user is already there or add
-            const userIndex = standList.findIndex(u => u.name === state.user.name);
-            if (userIndex !== -1) {
-                standList[userIndex].stars = state.user.stars;
-                standList[userIndex].trophies = state.user.trophies;
-            } else {
-                standList.push({
-                    name: state.user.name,
-                    avatar: state.user.avatar,
-                    stars: state.user.stars,
-                    trophies: state.user.trophies,
-                    isUser: true
-                });
-            }
-
-            // Sort by stars descending
-            standList.sort((a, b) => b.stars - a.stars);
-
-            standList.forEach((member, index) => {
+            listData.forEach((member, index) => {
                 const row = document.createElement('div');
+                const isMe = member.name === state.user.name;
                 row.className = `p-3.5 rounded-2xl border transition-all flex items-center justify-between ${
-                    member.isUser 
+                    isMe 
                         ? 'bg-amber-50 border-amber-300 ring-2 ring-amber-100' 
                         : 'bg-white border-slate-100'
                 }`;
 
-                // Positioning badge style
                 let posColor = 'bg-slate-100 text-slate-500';
                 if (index === 0) posColor = 'bg-yellow-400 text-white font-extrabold';
                 else if (index === 1) posColor = 'bg-slate-300 text-white font-extrabold';
@@ -1809,15 +1962,14 @@
                 row.innerHTML = `
                     <div class="flex items-center space-x-3">
                         <span class="w-6 h-6 rounded-full ${posColor} flex items-center justify-center text-xs font-black">${index + 1}</span>
-                        <span class="text-xl">${member.avatar}</span>
-                        <span class="font-black text-sm sm:text-base ${member.isUser ? 'text-amber-800' : 'text-slate-700'}">${member.name} ${member.isUser ? '(Con)' : ''}</span>
+                        <span class="text-xl">${member.avatar || '🐰'}</span>
+                        <span class="font-black text-sm sm:text-base ${isMe ? 'text-amber-800' : 'text-slate-700'}">${member.name} ${isMe ? '(Con)' : ''}</span>
                     </div>
                     <div class="flex items-center space-x-3 text-xs sm:text-sm">
                         <span class="font-extrabold text-slate-600">⭐ ${member.stars}</span>
                         <span class="font-extrabold text-orange-500">🏆 ${member.trophies}</span>
                     </div>
                 `;
-
                 list.appendChild(row);
             });
         }
@@ -1857,8 +2009,6 @@
         // RENDER ADMIN DASHBOARD
         function renderAdminDashboard() {
             const history = state.adminState.testHistory;
-            
-            // Calculate stats
             const totalTests = history.length;
             let avgScore = 0.0;
             let excellentCount = 0;
@@ -1877,20 +2027,71 @@
 
             const excellentPercentage = totalTests > 0 ? Math.round((excellentCount / totalTests) * 100) : 0;
 
-            // Render stats UI
             document.getElementById('admin-stat-total').innerText = totalTests;
             document.getElementById('admin-stat-avg').innerText = avgScore + " / 10";
             document.getElementById('admin-stat-excellent').innerText = excellentPercentage + "%";
 
-            // Trigger table filtering rendering
+            const select = document.getElementById('admin-max-week-select');
+            if (select) {
+                select.innerHTML = '';
+                for (let i = 1; i <= 35; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.innerText = `Tuần ${i}`;
+                    if (i === state.maxPlayableWeek) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                }
+            }
+
             filterAdminHistory();
         }
 
-        // FILTER ADMIN TEST HISTORY
+        // CLOUD CONTROL PANEL - WEEK LOCKS
+        async function updateMaxPlayableWeek(val) {
+            state.maxPlayableWeek = parseInt(val, 10);
+            try {
+                if (user) {
+                    await setDoc(configDocRef, { maxPlayableWeek: state.maxPlayableWeek }, { merge: true });
+                    showCustomAlert("🔓 Đã Cập Nhật!", `Đã đồng bộ mở khóa học đến Tuần ${state.maxPlayableWeek} cho toàn bộ hệ thống!`);
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        async function unlockAllWeeks() {
+            state.maxPlayableWeek = 35;
+            try {
+                if (user) {
+                    await setDoc(configDocRef, { maxPlayableWeek: 35 }, { merge: true });
+                    triggerConfetti();
+                    showCustomAlert("🎉 Tuyệt Vời!", "Hệ thống đã cập nhật mở khóa toàn bộ 35 tuần học trực tuyến!");
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        async function resetWeeksLock() {
+            state.maxPlayableWeek = 4;
+            try {
+                if (user) {
+                    await setDoc(configDocRef, { maxPlayableWeek: 4 }, { merge: true });
+                    showCustomAlert("🔒 Khóa Lại!", "Hệ thống đã khôi phục chế độ giới hạn trải nghiệm học (Chỉ mở 4 tuần đầu).");
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        // FILTER ADMIN LOGS
         function filterAdminHistory() {
             const query = document.getElementById('admin-search-student').value.trim().toLowerCase();
             const weekFilter = document.getElementById('admin-filter-week').value;
             const tableRows = document.getElementById('admin-table-rows');
+            if (!tableRows) return;
             tableRows.innerHTML = '';
 
             const rawHistory = state.adminState.testHistory;
@@ -1907,8 +2108,6 @@
                 
                 filteredHistory.forEach(record => {
                     const scoreScaled = ((record.score / record.total) * 10).toFixed(1);
-                    
-                    // Assign styling based on classification
                     let classBadgeClass = "bg-rose-50 text-rose-700";
                     if (record.classification.includes("Xuất sắc")) classBadgeClass = "bg-yellow-50 text-yellow-700 border border-yellow-200";
                     else if (record.classification.includes("Giỏi")) classBadgeClass = "bg-emerald-50 text-emerald-700 border border-emerald-200";
@@ -1933,7 +2132,7 @@
                             </span>
                         </td>
                         <td class="p-4 text-center">
-                            <button onclick="deleteSubmission('${record.id}')" class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition-all flex items-center justify-center mx-auto" title="Xóa bản ghi này">
+                            <button onclick="window.deleteSubmission('${record.id}')" class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition-all flex items-center justify-center mx-auto" title="Xóa bản ghi này">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-rose-500"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
                             </button>
                         </td>
@@ -1943,84 +2142,56 @@
             }
         }
 
-        // ACTIONS ON ADMIN TABLE
-        function deleteSubmission(id) {
-            state.adminState.testHistory = state.adminState.testHistory.filter(item => item.id !== id);
-            saveTestHistory();
-            renderAdminDashboard();
-        }
-
-        // CLEAR LOGS
-        function clearAllSubmissions() {
-            state.adminState.testHistory = [];
-            saveTestHistory();
-            renderAdminDashboard();
-            showCustomAlert("🧹 Đã Dọn Sạch!", "Đã xóa toàn bộ lịch sử nộp bài của học sinh thành công.");
-        }
-
-        // GENERATE INTEGRATED DEMO DATA INCLUDING ECO001
-        function injectDemoSubmissions() {
-            const demoRecords = [
-                {
-                    id: 'DEMO_1',
-                    studentName: "ECO001",
-                    weekId: 1,
-                    score: 5,
-                    total: 5,
-                    timeSpent: "03:14",
-                    date: "2026-06-20 09:12",
-                    classification: "Xuất sắc 👑"
-                },
-                {
-                    id: 'DEMO_2',
-                    studentName: "ECO001",
-                    weekId: 2,
-                    score: 4,
-                    total: 5,
-                    timeSpent: "05:42",
-                    date: "2026-06-20 09:30",
-                    classification: "Giỏi 🥇"
-                },
-                {
-                    id: 'DEMO_3',
-                    studentName: "Nguyễn Minh Khang",
-                    weekId: 1,
-                    score: 3,
-                    total: 5,
-                    timeSpent: "06:12",
-                    date: "2026-06-19 14:15",
-                    classification: "Khá 🥈"
-                },
-                {
-                    id: 'DEMO_4',
-                    studentName: "ECO002",
-                    weekId: 1,
-                    score: 4,
-                    total: 5,
-                    timeSpent: "04:55",
-                    date: "2026-06-19 16:42",
-                    classification: "Giỏi 🥇"
-                },
-                {
-                    id: 'DEMO_5',
-                    studentName: "Trần Mai Chi",
-                    weekId: 3,
-                    score: 5,
-                    total: 5,
-                    timeSpent: "02:40",
-                    date: "2026-06-20 11:05",
-                    classification: "Xuất sắc 👑"
+        // CLOUD ACTION: DELETE SUBMISSION
+        async function deleteSubmission(id) {
+            try {
+                if (user) {
+                    const targetDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'submissions', id);
+                    await deleteDoc(targetDocRef);
                 }
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        // CLOUD ACTION: CLEAR ALL SUBMISSIONS
+        async function clearAllSubmissions() {
+            try {
+                if (user) {
+                    const snapshot = await getDocs(submissionsRef);
+                    snapshot.forEach(async (docSnap) => {
+                        await deleteDoc(docSnap.ref);
+                    });
+                    showCustomAlert("🧹 Đã Dọn Sạch!", "Đã xóa toàn bộ lịch sử nộp bài thành công trên Cloud Firestore.");
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        // CLOUD ACTION: INJECT DEMO RECORDS
+        async function injectDemoSubmissions() {
+            const demoRecords = [
+                { studentName: "ECO001", weekId: 1, score: 5, total: 5, timeSpent: "03:14", date: "2026-06-20 09:12", classification: "Xuất sắc 👑", timestamp: Date.now() - 50000 },
+                { studentName: "ECO001", weekId: 2, score: 4, total: 5, timeSpent: "05:42", date: "2026-06-20 09:30", classification: "Giỏi 🥇", timestamp: Date.now() - 40000 },
+                { studentName: "Nguyễn Minh Khang", weekId: 1, score: 3, total: 5, timeSpent: "06:12", date: "2026-06-19 14:15", classification: "Khá 🥈", timestamp: Date.now() - 30000 },
+                { studentName: "ECO002", weekId: 1, score: 4, total: 5, timeSpent: "04:55", date: "2026-06-19 16:42", classification: "Giỏi 🥇", timestamp: Date.now() - 20000 },
+                { studentName: "Trần Mai Chi", weekId: 3, score: 5, total: 5, timeSpent: "02:40", date: "2026-06-20 11:05", classification: "Xuất sắc 👑", timestamp: Date.now() - 10000 }
             ];
 
-            state.adminState.testHistory = [...demoRecords, ...state.adminState.testHistory];
-            saveTestHistory();
-            renderAdminDashboard();
-            triggerConfetti();
-            showCustomAlert("📊 Đã Tạo Dữ Liệu!", "Hệ thống đã nạp thành công 5 bản ghi thử nghiệm bao gồm học sinh mã 'ECO001'.");
+            try {
+                if (user) {
+                    for (let record of demoRecords) {
+                        await addDoc(submissionsRef, record);
+                    }
+                    triggerConfetti();
+                    showCustomAlert("📊 Đã Tạo Dữ Liệu!", "Hệ thống đã nạp thành công 5 bản ghi thử nghiệm lên Cloud Firestore.");
+                }
+            } catch (e) {
+                console.warn(e);
+            }
         }
 
-        // CONFETTI CELEBRATION
         function triggerConfetti() {
             try {
                 confetti({
@@ -2029,21 +2200,19 @@
                     origin: { y: 0.6 }
                 });
             } catch (e) {
-                console.log("Confetti animation omitted.");
+                console.log("Confetti omitted.");
             }
         }
 
-        // CUSTOM ALERT SYSTEM (Non-blocking replacement for alert)
         function showCustomAlert(title, message, btnText = "Đã hiểu!") {
             document.getElementById('alert-title').innerText = title;
             document.getElementById('alert-message').innerText = message;
             document.getElementById('alert-btn').innerText = btnText;
 
-            // Setup emojis accordingly
             const emojiEl = document.getElementById('alert-emoji');
-            if (title.includes("Tuyệt") || title.includes("chính xác") || title.includes("Hoàn") || title.includes("Leo") || title.includes("Tạo")) {
+            if (title.includes("Tuyệt") || title.includes("chính xác") || title.includes("Hoàn") || title.includes("Leo") || title.includes("Tạo") || title.includes("Cập Nhật")) {
                 emojiEl.innerText = "🎉";
-            } else if (title.includes("Tiếc") || title.includes("Chưa") || title.includes("Sai")) {
+            } else if (title.includes("Tiếc") || title.includes("Chưa") || title.includes("Sai") || title.includes("Khóa")) {
                 emojiEl.innerText = "💪";
             } else if (title.includes("Còn") || title.includes("trống")) {
                 emojiEl.innerText = "📝";
@@ -2064,54 +2233,33 @@
             alertModal.classList.remove('flex');
         }
 
-        // PERSISTENCE LOCAL STORAGE IMPLEMENTATION
-        function saveLocalProgress() {
-            try {
-                localStorage.setItem('toan3_kntt_user', JSON.stringify(state.user));
-            } catch (err) {
-                console.error("Could not write user to local storage", err);
-            }
-        }
+        // BẮT BUỘC BIND TẤT CẢ PHƯƠNG THỨC RA NGOÀI WINDOW ĐỂ LIÊN KẾT HTML INLINE CLICK ĐƯỢC CHUẨN XÁC
+        window.changeView = changeView;
+        window.selectCompanion = selectCompanion;
+        window.startApp = startApp;
+        window.startStudyMode = startStudyMode;
+        window.startTestMode = startTestMode;
+        window.navigateStudyQuestion = navigateStudyQuestion;
+        window.checkStudyAnswer = checkStudyAnswer;
+        window.navigateTestQuestion = navigateTestQuestion;
+        window.confirmSubmitTest = confirmSubmitTest;
+        window.startAdvancedMode = startAdvancedMode;
+        window.checkAdvancedAnswer = checkAdvancedAnswer;
+        window.openAdminLoginModal = openAdminLoginModal;
+        window.closeAdminLoginModal = closeAdminLoginModal;
+        window.submitAdminPassword = submitAdminPassword;
+        window.logoutAdmin = logoutAdmin;
+        window.updateMaxPlayableWeek = updateMaxPlayableWeek;
+        window.unlockAllWeeks = unlockAllWeeks;
+        window.resetWeeksLock = resetWeeksLock;
+        window.filterAdminHistory = filterAdminHistory;
+        window.injectDemoSubmissions = injectDemoSubmissions;
+        window.clearAllSubmissions = clearAllSubmissions;
+        window.deleteSubmission = deleteSubmission;
+        window.closeCustomAlert = closeCustomAlert;
 
-        // LOAD PROGRESS
-        function loadLocalProgress() {
-            try {
-                const raw = localStorage.getItem('toan3_kntt_user');
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    state.user = { ...state.user, ...parsed };
-                    
-                    // Immediately jump to dashboard if user has been configured previously
-                    if (state.user.stars > 0) {
-                        changeView('dashboard');
-                    }
-                }
-            } catch (err) {
-                console.error("Could not read user from local storage", err);
-            }
-        }
-
-        function saveTestHistory() {
-            try {
-                localStorage.setItem('toan3_kntt_history', JSON.stringify(state.adminState.testHistory));
-            } catch (err) {
-                console.error("Could not write test history to local storage", err);
-            }
-        }
-
-        function loadTestHistory() {
-            try {
-                const raw = localStorage.getItem('toan3_kntt_history');
-                if (raw) {
-                    state.adminState.testHistory = JSON.parse(raw);
-                } else {
-                    // Inject basic seed data on fresh run so dashboard is not dry
-                    injectDemoSubmissions();
-                }
-            } catch (err) {
-                console.error("Could not read history from local storage", err);
-            }
-        }
+        // KHỞI ĐỘNG XÁC THỰC KHI LOAD TRANG
+        initAuth();
     </script>
 </body>
 </html>
