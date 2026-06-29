@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toán Lớp 3 - Tích Hợp Đám Mây Real-time</title>
+    <title>Toán Lớp 3 - Tích Hợp Đám Mây & Giọng Nói AI</title>
 
     <!-- HỘP BẢO VỆ CHỐNG LỖI GETBOUNDINGCLIENTRECT TRONG SANDBOX IFRAME NÂNG CAO -->
     <script>
@@ -119,7 +119,7 @@
                 </div>
                 <div class="hidden sm:block">
                     <h1 class="text-lg font-black text-brand-600 leading-tight">Kết Nối Tri Thức</h1>
-                    <p class="text-xs text-slate-400 font-bold">Hành Trình Kỳ Thú (Cloud Mode)</p>
+                    <p class="text-xs text-slate-400 font-bold">Hành Trình Kỳ Thú (AI Voice & Cloud)</p>
                 </div>
             </button>
 
@@ -249,10 +249,13 @@
                     <div class="bg-white rounded-3xl p-5 border-2 border-yellow-200 shadow-sm relative">
                         <div class="flex items-start space-x-3">
                             <span id="mascot-avatar" class="text-4xl bouncy">🐰</span>
-                            <div class="bg-yellow-50 rounded-2xl p-3 border border-yellow-100 flex-1 relative">
+                            <div class="bg-yellow-50 rounded-2xl p-3 border border-yellow-100 flex-1 relative space-y-2">
                                 <p id="mascot-speech" class="text-xs sm:text-sm text-slate-600 font-bold leading-relaxed">
                                     "Chào nhé! Tớ sẽ giúp bạn học tốt hơn. Chọn một tuần học bên cạnh để làm quen nhé!"
                                 </p>
+                                <button onclick="window.speakMascotSpeech()" class="px-3 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all">
+                                    🔊 Nghe bạn nói
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -306,9 +309,14 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <!-- Theory Sheet Left -->
                 <div class="lg:col-span-5 bg-gradient-to-br from-yellow-50 to-orange-50 border-4 border-dashed border-yellow-400 rounded-3xl p-5 shadow-inner">
-                    <h3 class="font-black text-amber-800 text-lg mb-3 flex items-center gap-2">
-                        📖 Sổ Tay Kiến Thức Cần Nhớ
-                    </h3>
+                    <div class="flex items-center justify-between border-b border-yellow-200 pb-2 mb-3">
+                        <h3 class="font-black text-amber-800 text-base sm:text-lg flex items-center gap-2">
+                            📖 Sổ Tay Kiến Thức
+                        </h3>
+                        <button onclick="window.speakText(document.getElementById('theory-content').innerText)" class="px-3 py-1 bg-amber-200 hover:bg-amber-300 text-amber-900 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow-sm">
+                            🔊 Giảng bài
+                        </button>
+                    </div>
                     <div id="theory-content" class="text-sm font-bold text-slate-600 space-y-3 leading-relaxed">
                         <!-- Injected theory content -->
                     </div>
@@ -332,9 +340,14 @@
 
                     <!-- Explanatory Box (Hidden initially) -->
                     <div id="study-explanation-box" class="hidden mt-6 p-4 rounded-2xl bg-teal-50 border border-teal-200 text-slate-700 space-y-2">
-                        <div class="flex items-center space-x-2 text-teal-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                            <span class="font-black text-sm">Lời Giải Chi Tiết:</span>
+                        <div class="flex items-center justify-between text-teal-600 border-b border-teal-100 pb-1.5 mb-1">
+                            <div class="flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <span class="font-black text-sm">Lời Giải Chi Tiết:</span>
+                            </div>
+                            <button onclick="window.speakText(document.getElementById('study-explanation-text').innerText)" class="px-2.5 py-1 bg-teal-100 hover:bg-teal-200 text-teal-800 rounded-lg text-xs font-black flex items-center gap-1" title="Nghe giải thích">
+                                🔊 Đọc lời giải
+                            </button>
                         </div>
                         <p id="study-explanation-text" class="text-sm font-bold leading-relaxed"></p>
                     </div>
@@ -793,7 +806,7 @@
                     title: "Tuần 1: Ôn Tập Số Đến 1000 & Phép Cộng, Trừ Có Nhớ",
                     theory: `
                         <ul class="space-y-2">
-                            <li>📍 <strong>Cấu tạo số đến 1000:</strong> Trăm ➡️ Chục ➡️ Đơn vị. Ví dụ: Số $528$ gồm $5$ trăm, $2$ chục, $8$ đơn vị.</li>
+                            <li>📍 <strong>Cấu tạo số đến 1000:</strong> Trăm ➡️ Chục ➡️ Đơn vị. Ví dụ: Số 528 gồm 5 trăm, 2 chục, 8 đơn vị.</li>
                             <li>📍 <strong>So sánh các số:</strong> So sánh chữ số từ hàng trăm, hàng chục rồi đến hàng đơn vị.</li>
                             <li>📍 <strong>Cộng, trừ có nhớ:</strong> Thực hiện đặt tính thẳng cột từ phải sang trái. Đừng quên cộng thêm số nhớ khi thực hiện phép tính tiếp theo nhé!</li>
                         </ul>
@@ -873,8 +886,8 @@
                         <ul class="space-y-2">
                             <li>📍 <strong>Bảng nhân 3 & 4:</strong> Giúp tính nhẩm nhanh các đại lượng gấp lên 3 lần hoặc 4 lần.</li>
                             <li>📍 <strong>Bảng chia 3 & 4:</strong> Phép chia là phép tính ngược lại của phép nhân.</li>
-                            <li>📍 <strong>Gấp một số lên nhiều lần:</strong> Ta lấy số đó <strong>nhân</strong> với số lần.</li>
-                            <li>📍 <strong>Giảm một số đi nhiều lần:</strong> Ta lấy số đó <strong>chia</strong> cho số lần.</li>
+                            <li>📍 <strong>Gấp một số lên nhiều lần:</strong> Ta lấy số đó nhân với số lần.</li>
+                            <li>📍 <strong>Giảm một số đi nhiều lần:</strong> Ta lấy số đó chia cho số lần.</li>
                         </ul>
                     `,
                     revisionQuestions: [
@@ -1154,6 +1167,63 @@
         const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
         const configDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'settings');
         const globalScoresRef = collection(db, 'artifacts', appId, 'public', 'data', 'scores');
+
+        // HỆ THỐNG GIỌNG NÓI TRÍ TUỆ NHÂN TẠO AI SPEECH (Viettel AI TTS)
+        async function speakText(text) {
+            if (!text) return;
+
+            // Bộ lọc làm sạch văn bản thô để giọng đọc AI mượt mà và tự nhiên nhất
+            const cleanedText = text
+                .replace(/<[^>]*>/g, '') // Xóa thẻ HTML
+                .replace(/➡️/g, ' thì bằng ')
+                .replace(/📍/g, ' Điểm lưu ý là: ')
+                .replace(/:/g, ' là: ')
+                .replace(/\+/g, ' cộng ')
+                .replace(/-/g, ' trừ ')
+                .replace(/x/g, ' nhân ')
+                .replace(/:/g, ' chia ')
+                .replace(/\//g, ' phần ')
+                .trim();
+
+            try {
+                const response = await fetch("https://viettelai.vn/tts/speech_synthesis", {
+                    method: "POST",
+                    headers: {
+                        "accept": "*/*",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        text: cleanedText,
+                        voice: "hcm-diemmy",
+                        speed: 1,
+                        tts_return_option: 3,
+                        token: "395f6b744a34ff3eb6e042656cde6ffe",
+                        without_filter: false
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Lỗi API kết nối: " + response.status);
+                }
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+
+                const audio = new Audio(audioUrl);
+                audio.play();
+
+            } catch (err) {
+                console.error(err);
+                // Hiển thị thông báo lỗi tùy biến (Không sử dụng alert trình duyệt)
+                showCustomAlert("⚠️ Giọng nói gặp lỗi!", "Hiện tại không thể phát âm thanh hướng dẫn: " + err.message);
+            }
+        }
+
+        // Đọc nội dung phát biểu của Mascot
+        function speakMascotSpeech() {
+            const speechText = document.getElementById('mascot-speech').innerText;
+            speakText(speechText);
+        }
 
         // CHẠY HỆ THỐNG XÁC THỰC AN TOÀN TRƯỚC (RULE 3)
         const initAuth = async () => {
@@ -1447,9 +1517,18 @@
             const box = document.getElementById('study-question-box');
             box.innerHTML = '';
 
+            // Đề bài kèm nút Loa AI Voice sinh động
             const qTitle = document.createElement('h4');
-            qTitle.className = "font-black text-slate-700 text-base sm:text-lg leading-relaxed flex items-start gap-2";
-            qTitle.innerHTML = `<span class="bg-brand-500 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs flex-shrink-0 mt-0.5">${qIndex + 1}</span> <span>${question.question}</span>`;
+            qTitle.className = "font-black text-slate-700 text-base sm:text-lg leading-relaxed flex items-start gap-2 justify-between";
+            qTitle.innerHTML = `
+                <span class="flex items-start gap-2 flex-1">
+                    <span class="bg-brand-500 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs flex-shrink-0 mt-0.5">${qIndex + 1}</span>
+                    <span id="study-q-text">${question.question}</span>
+                </span>
+                <button onclick="window.speakText(document.getElementById('study-q-text').innerText)" class="p-1.5 bg-brand-50 hover:bg-brand-100 text-brand-600 rounded-xl text-sm flex-shrink-0 transition-colors" title="Nghe đọc câu hỏi">
+                    🔊
+                </button>
+            `;
             box.appendChild(qTitle);
 
             if (question.type === 'mcq') {
@@ -1642,8 +1721,16 @@
             box.innerHTML = '';
 
             const qText = document.createElement('h3');
-            qText.className = "font-black text-slate-700 text-base sm:text-lg leading-relaxed";
-            qText.innerHTML = `<span class="bg-pink-500 text-white px-2 py-1 rounded-lg text-xs font-black mr-2">Câu ${qIndex + 1}</span> ${question.question}`;
+            qText.className = "font-black text-slate-700 text-base sm:text-lg leading-relaxed flex items-start justify-between gap-2";
+            qText.innerHTML = `
+                <span class="flex items-start gap-2 flex-1">
+                    <span class="bg-pink-500 text-white px-2 py-1 rounded-lg text-xs font-black mr-2">Câu ${qIndex + 1}</span>
+                    <span id="test-q-text">${question.question}</span>
+                </span>
+                <button onclick="window.speakText(document.getElementById('test-q-text').innerText)" class="p-1.5 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-xl text-sm flex-shrink-0 transition-colors" title="Nghe câu hỏi">
+                    🔊
+                </button>
+            `;
             box.appendChild(qText);
 
             const grid = document.createElement('div');
@@ -1847,9 +1934,15 @@
             ];
             document.getElementById('climb-helper-speech').innerText = speechBubbles[stage - 1];
 
+            // Tiêu đề đề bài đỉnh núi kèm Loa AI
             const title = document.createElement('h3');
-            title.className = "font-black text-slate-700 text-lg leading-relaxed p-4 bg-indigo-50 border border-indigo-100 rounded-2xl";
-            title.innerHTML = puzzle.question;
+            title.className = "font-black text-slate-700 text-lg leading-relaxed p-4 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-start justify-between gap-2";
+            title.innerHTML = `
+                <span id="adv-q-text" class="flex-1">${puzzle.question}</span>
+                <button onclick="window.speakText(document.getElementById('adv-q-text').innerText)" class="p-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded-xl text-sm flex-shrink-0 transition-colors" title="Nghe câu hỏi">
+                    🔊
+                </button>
+            `;
             area.appendChild(title);
 
             if (puzzle.type === 'mcq') {
@@ -2257,6 +2350,8 @@
         window.clearAllSubmissions = clearAllSubmissions;
         window.deleteSubmission = deleteSubmission;
         window.closeCustomAlert = closeCustomAlert;
+        window.speakText = speakText;
+        window.speakMascotSpeech = speakMascotSpeech;
 
         // KHỞI ĐỘNG XÁC THỰC KHI LOAD TRANG
         initAuth();
