@@ -116,7 +116,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-800 flex flex-col selection:bg-brand-100 selection:text-brand-700">
+<body class="min-h-screen text-slate-800 flex flex-col selection:bg-brand-100 selection:text-brand-700 overflow-x-hidden">
 
     <header class="bg-white border-b-4 border-brand-100 sticky top-0 z-30 shadow-sm transition-all">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -163,8 +163,8 @@
                 <button onclick="openAdminLoginModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 rounded-full border border-slate-300 transition-colors flex items-center justify-center" title="Bảng quản trị Admin">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 </button>
-                <!-- Log out -->
-                <button onclick="logoutStudent()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 p-2 rounded-full border border-rose-200 transition-colors flex items-center justify-center" title="Đăng xuất">
+                <!-- Log out / Switch Account -->
+                <button onclick="logoutStudent()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 p-2 rounded-full border border-rose-200 transition-all flex items-center justify-center" title="Chuyển tài khoản / Đăng xuất">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 </button>
             </div>
@@ -174,7 +174,7 @@
     <!-- MAIN APP WRAPPER -->
     <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-6 flex flex-col justify-center">
 
-        <section id="view-welcome" class="w-full max-w-2xl mx-auto bg-white rounded-3xl border-4 border-brand-400 shadow-xl p-6 sm:p-8 text-center relative overflow-hidden">
+        <section id="view-welcome" class="w-full max-w-2xl mx-auto bg-white rounded-3xl border-4 border-brand-400 shadow-xl p-6 sm:p-8 text-center relative overflow-hidden transition-all duration-300 transform scale-100 opacity-100">
             <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-100 rounded-full opacity-50 z-0"></div>
             <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-yellow-100 rounded-full opacity-50 z-0"></div>
 
@@ -219,11 +219,12 @@
                                class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-brand-400 focus:ring-0 text-center font-black text-lg text-slate-700 bg-slate-50 outline-none transition-all uppercase">
                     </div>
                     
-                    <!-- Dynamic password display for VIP codes -->
+                    <!-- Dynamic password display for VIP codes if configured -->
                     <div id="login-password-container" class="space-y-1 hidden">
-                        <label for="input-login-password" class="block text-left text-xs font-extrabold text-amber-600 uppercase tracking-wider">🔒 Mật Khẩu Đăng Nhập VIP:</label>
-                        <input type="password" id="input-login-password" placeholder="Nhập mật khẩu VIP..." 
+                        <label for="input-login-password" class="block text-left text-xs font-extrabold text-amber-600 uppercase tracking-wider">🔒 Mật Khẩu Đăng Nhập:</label>
+                        <input type="password" id="input-login-password" placeholder="Nhập mật khẩu của con..." 
                                class="w-full px-4 py-3 rounded-2xl border-2 border-amber-300 focus:border-amber-500 focus:ring-0 text-center font-black text-lg text-amber-700 bg-amber-50 outline-none transition-all">
+                        <p class="text-[10px] text-amber-600 font-extrabold text-left pt-1">💡 Tài khoản này được bảo vệ. Vui lòng nhập mật khẩu để tiếp tục!</p>
                     </div>
                 </div>
 
@@ -245,7 +246,7 @@
             </div>
         </section>
 
-        <section id="view-dashboard" class="hidden w-full space-y-6">
+        <section id="view-dashboard" class="hidden w-full space-y-6 transition-all duration-300 transform opacity-0 scale-95">
             <!-- Hero Dashboard Banner -->
             <div id="dashboard-banner" class="bg-gradient-to-r from-brand-400 to-sky-500 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
                 <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -317,7 +318,7 @@
                         </div>
                     </div>
 
-                    <!-- DYNAMIC DONATE WIDGET (Managed by Admin) -->
+                    <!-- DYNAMIC DONATE WIDGET -->
                     <div id="student-donate-card" class="hidden bg-amber-50 rounded-3xl p-5 border-2 border-amber-300 shadow-sm space-y-4 text-center">
                         <div class="flex items-center justify-center space-x-2 text-amber-700">
                             <span class="text-2xl bouncy">🐷</span>
@@ -362,15 +363,14 @@
             </div>
         </section>
 
-        <!-- 3. STUDY MODE (Revision / Theory & Practice Quiz) -->
-        <section id="view-study" class="hidden w-full space-y-6">
+        <section id="view-study" class="hidden w-full space-y-6 transition-all duration-300 transform opacity-0 scale-95">
             <div class="bg-white rounded-2xl p-4 border-2 border-brand-200 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
                     <button onclick="changeView('dashboard')" class="bg-slate-100 hover:bg-slate-200 p-2.5 rounded-xl transition-colors flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-slate-600"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                     </button>
                     <div>
-                        <h2 id="study-week-title" class="font-black text-slate-800 text-lg sm:text-xl">Tuần 1: Ôn Tập Các Số Đến 1000</h2>
+                        <h2 id="study-week-title" class="font-black text-slate-800 text-lg sm:text-xl">Tuần 1</h2>
                         <span class="text-xs text-brand-500 font-bold">Chế độ ôn tập lý thuyết & tự luyện tập</span>
                     </div>
                 </div>
@@ -382,7 +382,7 @@
                 </div>
             </div>
 
-            <!-- Main Panel Split (Theory & Interactive Question) -->
+            <!-- Main Panel Split -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <!-- Theory Sheet Left -->
                 <div class="lg:col-span-5 bg-gradient-to-br from-yellow-50 to-orange-50 border-4 border-dashed border-yellow-400 rounded-3xl p-5 shadow-inner">
@@ -411,9 +411,7 @@
                     </div>
 
                     <!-- Active Question Box -->
-                    <div id="study-question-box" class="space-y-6">
-                        <!-- Dynamic Question Text & Options -->
-                    </div>
+                    <div id="study-question-box" class="space-y-6"></div>
 
                     <!-- Explanatory Box (Hidden initially) -->
                     <div id="study-explanation-box" class="hidden mt-6 p-4 rounded-2xl bg-teal-50 border border-teal-200 text-slate-700 space-y-2">
@@ -445,8 +443,7 @@
             </div>
         </section>
 
-        <!-- 4. TEST MODE (Timed Weekly Assessment) -->
-        <section id="view-test" class="hidden w-full max-w-3xl mx-auto space-y-6">
+        <section id="view-test" class="hidden w-full max-w-3xl mx-auto space-y-6 transition-all duration-300 transform opacity-0 scale-95">
             <div class="bg-white rounded-2xl p-4 border-2 border-pink-200 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
                     <span class="bg-pink-100 text-pink-600 p-2 rounded-xl flex items-center justify-center">
@@ -485,8 +482,7 @@
             </div>
         </section>
 
-        <!-- 4.1 TEST RESULT / REPORT CARD -->
-        <section id="view-test-result" class="hidden w-full max-w-xl mx-auto bg-white rounded-3xl border-4 border-brand-400 shadow-2xl p-8 text-center relative overflow-hidden">
+        <section id="view-test-result" class="hidden w-full max-w-xl mx-auto bg-white rounded-3xl border-4 border-brand-400 shadow-2xl p-8 text-center relative overflow-hidden transition-all duration-300 transform opacity-0 scale-95">
             <div id="confetti-holder" class="absolute top-0 left-0 w-full h-full pointer-events-none z-0"></div>
 
             <div class="relative z-10 space-y-6">
@@ -517,8 +513,7 @@
             </div>
         </section>
 
-        <!-- 5. ADVANCED MATH MODE (Chinh phục Đỉnh núi) -->
-        <section id="view-advanced" class="hidden w-full space-y-6">
+        <section id="view-advanced" class="hidden w-full space-y-6 transition-all duration-300 transform opacity-0 scale-95">
             <div class="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-3xl p-6 text-white shadow-lg flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
                     <button onclick="changeView('dashboard')" class="bg-white/10 hover:bg-white/20 p-2.5 rounded-xl transition-colors flex items-center justify-center">
@@ -577,8 +572,7 @@
             </div>
         </section>
 
-        <!-- 5.1 SPECIAL VIP OLYMPIC ROOM -->
-        <section id="view-vip-olympic" class="hidden w-full space-y-6">
+        <section id="view-vip-olympic" class="hidden w-full space-y-6 transition-all duration-300 transform opacity-0 scale-95">
             <div class="bg-gradient-to-r from-amber-500 via-yellow-500 to-purple-600 rounded-3xl p-6 text-white shadow-lg flex flex-wrap items-center justify-between gap-4 vip-shimmer border-2 border-yellow-300">
                 <div class="flex items-center space-x-3">
                     <button onclick="changeView('dashboard')" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-xl transition-colors flex items-center justify-center">
@@ -646,8 +640,7 @@
             </div>
         </section>
 
-        <!-- 6. LEADERBOARD VIEW -->
-        <section id="view-leaderboard" class="hidden w-full max-w-xl mx-auto space-y-6">
+        <section id="view-leaderboard" class="hidden w-full max-w-xl mx-auto space-y-6 transition-all duration-300 transform opacity-0 scale-95">
             <div class="bg-white rounded-2xl p-4 border-2 border-indigo-100 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <button onclick="changeView('dashboard')" class="bg-slate-100 hover:bg-slate-200 p-2 rounded-xl transition-colors flex items-center justify-center">
@@ -664,8 +657,7 @@
             </div>
         </section>
 
-        <!-- 7. ADMIN DASHBOARD VIEW -->
-        <section id="view-admin" class="hidden w-full space-y-6">
+        <section id="view-admin" class="hidden w-full space-y-6 transition-all duration-300 transform opacity-0 scale-95">
             <div class="bg-slate-800 text-white rounded-3xl p-6 shadow-lg flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
                     <span class="bg-slate-700 p-3 rounded-2xl text-2xl">📊</span>
@@ -803,7 +795,7 @@
 
             <!-- SUBVIEW 2: EDIT & CREATE VIP STUDENTS -->
             <div id="admin-subview-students" class="hidden space-y-6">
-                <!-- NEW: CREATE STUDENT ACCORDION (With Standard vs VIP options) -->
+                <!-- NEW: CREATE STUDENT ACCORDION -->
                 <div class="bg-white p-6 rounded-3xl border-2 border-amber-300 shadow-sm space-y-4">
                     <div class="flex items-center space-x-2 text-amber-700">
                         <span class="text-2xl">👑</span>
@@ -879,7 +871,7 @@
                             <div>
                                 <label class="block text-xs font-black text-slate-500 mb-1">Tên Chủ Tài Khoản:</label>
                                 <input type="text" id="admin-donate-name" placeholder="Ví dụ: NGUYEN VAN A..." 
-                                       class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl font-bold text-sm focus:border-brand-500 outline-none uppercase">
+                                       class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl font-bold text-sm focus:border-brand-500 outline-none uppercase font-mono">
                             </div>
                             <div>
                                 <label class="block text-xs font-black text-slate-500 mb-1">Lời nhắn kêu gọi:</label>
@@ -931,8 +923,23 @@
         </div>
     </footer>
 
+    <!-- LOADER OVERLAY FOR SMOOTH TRANSITIONS -->
+    <div id="smooth-loader" class="fixed inset-0 bg-white/95 backdrop-blur-md hidden items-center justify-center flex-col z-50 transition-all duration-500 opacity-0">
+        <div class="text-center space-y-4 max-w-sm px-6">
+            <span id="loader-emoji" class="text-7xl bouncy inline-block">🚀</span>
+            <h3 id="loader-title" class="text-2xl font-black text-brand-600">Đang chuẩn bị...</h3>
+            <p id="loader-subtitle" class="text-sm font-bold text-slate-400">Thế giới Toán học kỳ thú đang mở ra trong chốc lát!</p>
+            <div class="flex justify-center mt-6">
+                <div class="relative flex items-center justify-center">
+                    <div class="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-brand-400 opacity-75"></div>
+                    <div class="relative inline-flex rounded-full h-4 w-4 bg-brand-500"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- SECURE ADMIN PASSCODE LOGIN MODAL -->
-    <div id="admin-login-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div id="admin-login-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-40 transition-all duration-300">
         <div class="bg-white rounded-3xl border-4 border-slate-800 max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-28 h-28 bg-slate-50 rounded-full opacity-50 z-0"></div>
             <div class="relative z-10 space-y-4">
@@ -1037,7 +1044,7 @@
             }
         };
 
-        // VIP Olympic Questions Bank (Chuyên sâu toán tư duy logic)
+        // VIP Olympic Questions Bank
         const vipOlympicQuestions = [
             {
                 id: "vip-o1",
@@ -1258,7 +1265,7 @@
                         {
                             id: "w3-r2",
                             type: "mcq",
-                            question: "If bán kính hình tròn là 5cm thì đường kính của nó là bao nhiêu?",
+                            question: "Nếu bán kính hình tròn là 5cm thì đường kính của nó là bao nhiêu?",
                             options: ["10cm", "5cm", "15cm", "2.5cm"],
                             answer: "10cm",
                             explanation: "Đường kính của hình tròn luôn dài gấp đôi bán kính của hình tròn đó: 5 x 2 = 10cm."
@@ -1445,7 +1452,6 @@
         const configDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'settings');
         const studentsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'students');
 
-        // AI VOICE SPEAK ENGINE
         async function speakText(text) {
             if (!text) return;
 
@@ -1513,19 +1519,14 @@
 
         let activeStudentUnsubscribe = null;
 
-        // Dynamic checking for VIP codes on welcome login
         function handleCodeInputCheck(value) {
-            const cleanVal = value.trim().toUpperCase();
             const passContainer = document.getElementById('login-password-container');
-            if (cleanVal.startsWith('VIP')) {
-                passContainer.classList.remove('hidden');
-            } else {
-                passContainer.classList.add('hidden');
-            }
+            const passInput = document.getElementById('input-login-password');
+            if (passInput) passInput.value = '';
+            if (passContainer) passContainer.classList.add('hidden');
         }
         window.handleCodeInputCheck = handleCodeInputCheck;
 
-        // Active Student Cloud Sync
         async function syncStudentProfileLive(studentCode) {
             if (activeStudentUnsubscribe) {
                 activeStudentUnsubscribe();
@@ -1538,23 +1539,30 @@
                     const data = docSnap.data();
                     state.user = { code: docSnap.id, ...data };
                     
-                    // Force VIP if code starts with VIP
                     if (studentCode.startsWith('VIP')) {
                         state.user.isVip = true;
                     }
 
                     updateStatsUI();
-                    
                     localStorage.setItem('eco_student_code', studentCode);
 
                     if (state.currentView === 'welcome') {
-                        changeView('dashboard');
-                        triggerConfetti();
-                        
-                        if (state.user.isVip) {
-                            showCustomAlert("👑 Kính Chào Hội Viên VIP!", `Chào mừng bạn nhỏ VIP: "${state.user.name}"! Con đã được mở khóa toàn diện 35 tuần học cùng quyền truy cập Đấu trường Olympic Tư Duy cao cấp!`, "Bắt đầu học VIP");
-                            speakText(`Chào mừng thành viên VIP ${state.user.name} đã đăng nhập lớp học chuyên sâu!`);
-                        }
+                        // Chuyển hướng Dashboard kèm hiệu ứng chuyển trạng thái mượt mà
+                        triggerSmoothTransition(
+                            "Đang vào lớp học...",
+                            `Chào mừng ${state.user.name} cùng tham gia hành trình kì thú!`,
+                            state.user.avatar || "🐰",
+                            () => {
+                                changeView('dashboard');
+                                triggerConfetti();
+                                if (state.user.isVip) {
+                                    showCustomAlert("👑 Kính Chào Hội Viên VIP!", `Chào mừng bạn nhỏ VIP: "${state.user.name}"! Con đã được mở khóa toàn diện 35 tuần học cùng quyền truy cập Đấu trường Olympic Tư Duy cao cấp!`, "Bắt đầu học VIP");
+                                    speakText(`Chào mừng thành viên VIP ${state.user.name} đã đăng nhập lớp học chuyên sâu!`);
+                                } else {
+                                    speakText(`Chào mừng ${state.user.name} đã gia nhập thế giới toán học!`);
+                                }
+                            }
+                        );
                     }
                 }
             }, (err) => {
@@ -1705,18 +1713,26 @@
 
                 if (docSnap.exists()) {
                     const studentData = docSnap.data();
-                    
-                    // If account is VIP (has password or code starts with VIP)
-                    if (codeInput.startsWith('VIP') || studentData.isVip) {
-                        const enteredPassword = document.getElementById('input-login-password').value;
-                        const correctPassword = studentData.password || '';
+                    const hasPassword = studentData.password && studentData.password.trim() !== '';
 
-                        if (enteredPassword !== correctPassword) {
-                            showCustomAlert("❌ Sai Mật Khẩu VIP!", "Tài khoản VIP yêu cầu nhập mật khẩu bảo mật chính xác do Admin cấp!");
+                    if (hasPassword) {
+                        const passContainer = document.getElementById('login-password-container');
+                        const enteredPassword = document.getElementById('input-login-password').value;
+
+                        if (passContainer.classList.contains('hidden')) {
+                            passContainer.classList.remove('hidden');
+                            document.getElementById('input-login-password').focus();
+                            showCustomAlert("🔒 Nhập mật khẩu!", "Tài khoản của con đã được cài đặt mật khẩu bảo vệ. Hãy điền mật khẩu vừa xuất hiện bên dưới nhé!", "Đồng ý");
+                            return;
+                        }
+
+                        if (enteredPassword !== studentData.password) {
+                            showCustomAlert("❌ Sai Mật Khẩu!", "Mật khẩu bảo vệ không chính xác. Con hãy kiểm tra lại hoặc liên hệ Admin!");
                             return;
                         }
                     }
 
+                    // Đồng bộ tài khoản sau khi xác thực hợp lệ
                     await syncStudentProfileLive(codeInput);
                 } else {
                     showCustomAlert("😢 Không Tìm Thấy Mã!", `Mã học sinh "${codeInput}" không tồn tại. Con hãy đăng ký mới hoặc liên hệ Admin/Thầy Cô để cấp tài khoản VIP nhé!`);
@@ -1732,30 +1748,116 @@
                 try {
                     const newCode = await registerNewStudentCode(nickname, state.user.companion);
                     await syncStudentProfileLive(newCode);
-                    showCustomAlert("🎉 Đăng Ký Thành Công!", `Hệ thống đã tạo mã học sinh tự động: "${newCode}". Con hãy ghi nhớ mã này nhé!`, "Bắt đầu học!");
                 } catch (err) {
                     showCustomAlert("❌ Lỗi xảy ra!", "Không thể tạo tài khoản mới lúc này.");
                 }
             }
         }
 
-        function logoutStudent() {
-            localStorage.removeItem('eco_student_code');
-            if (activeStudentUnsubscribe) {
-                activeStudentUnsubscribe();
-            }
-            state.user = {
-                code: 'ECO000',
-                name: "Bạn nhỏ",
-                avatar: "🐰",
-                stars: 0,
-                trophies: 0,
-                companion: 'rabbit',
-                isVip: false,
-                password: ''
-            };
-            changeView('welcome');
-            showCustomAlert("🚪 Đã đăng xuất!", "Tạm biệt bạn nhỏ, chúc con học tập tốt!");
+        function triggerSmoothTransition(title, subtitle, emoji, callback) {
+            const loader = document.getElementById('smooth-loader');
+            const lEmoji = document.getElementById('loader-emoji');
+            const lTitle = document.getElementById('loader-title');
+            const lSub = document.getElementById('loader-subtitle');
+            
+            lEmoji.innerText = emoji || "🚀";
+            lTitle.innerText = title || "Đang kết nối...";
+            lSub.innerText = subtitle || "Vui lòng chờ trong giây lát!";
+            
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+            
+            // Trigger browser repaint to enable smooth opacity fade-in
+            setTimeout(() => {
+                loader.classList.remove('opacity-0');
+                loader.classList.add('opacity-100');
+            }, 10);
+            
+            // Simulate standard network latch duration for premium app feel
+            setTimeout(() => {
+                if (callback) callback();
+                
+                // Fade out smoothly
+                loader.classList.remove('opacity-100');
+                loader.classList.add('opacity-0');
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                    loader.classList.remove('flex');
+                }, 500);
+            }, 1400);
+        }
+
+        async function logoutStudent() {
+            const oldName = state.user.name;
+            speakText(`Tạm biệt ${oldName}! Hẹn gặp lại con nhé!`);
+            
+            triggerSmoothTransition(
+                "Đang đăng xuất...",
+                `Hẹn gặp lại bạn nhỏ ${oldName} đáng yêu nhé! 🐷`,
+                "👋",
+                () => {
+                    localStorage.removeItem('eco_student_code');
+                    if (activeStudentUnsubscribe) {
+                        activeStudentUnsubscribe();
+                        activeStudentUnsubscribe = null;
+                    }
+
+                    // Xóa và Đặt lại trạng thái tài khoản sạch hoàn toàn
+                    state.user = {
+                        code: 'ECO000',
+                        name: "Bạn nhỏ",
+                        avatar: "🐰",
+                        stars: 0,
+                        trophies: 0,
+                        companion: 'rabbit',
+                        isVip: false,
+                        password: ''
+                    };
+
+                    // Dọn dẹp tiến độ học tập, bài thi dang dở để tránh leak thông tin sang tài khoản sau
+                    state.studyState = {
+                        activeQuestionIndex: 0,
+                        answersChecked: {},
+                        userSelectedAnswers: {},
+                    };
+                    state.testState = {
+                        activeQuestionIndex: 0,
+                        userAnswers: {},
+                        timeLeft: 600,
+                        timerInterval: null
+                    };
+                    state.advancedState = {
+                        currentStage: 1,
+                        selectedAnswer: null,
+                        completed: false
+                    };
+                    state.vipOlympicState = {
+                        activeQuestionIndex: 0,
+                        userSelectedAnswers: {},
+                        answersChecked: {}
+                    };
+
+                    // Reset các ô nhập của màn hình Đăng Nhập
+                    const loginCodeInp = document.getElementById('input-login-code');
+                    if (loginCodeInp) loginCodeInp.value = '';
+
+                    const passContainer = document.getElementById('login-password-container');
+                    if (passContainer) passContainer.classList.add('hidden');
+
+                    const passInput = document.getElementById('input-login-password');
+                    if (passInput) passInput.value = '';
+
+                    const regInput = document.getElementById('input-nickname');
+                    if (regInput) regInput.value = '';
+
+                    updateStatsUI();
+                    changeView('welcome');
+
+                    setTimeout(() => {
+                        showCustomAlert("🚪 Đăng xuất thành công!", "Con đã đăng xuất an toàn. Con có thể đăng nhập bằng tài khoản khác hoặc tạo mã mới để thi thố nhé!", "Đăng ký / Đăng nhập");
+                    }, 600);
+                }
+            );
         }
 
         function switchWelcomeTab(tab) {
@@ -1788,11 +1890,20 @@
             const views = ['welcome', 'dashboard', 'study', 'test', 'test-result', 'advanced', 'vip-olympic', 'leaderboard', 'admin'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
-                if (el) el.classList.add('hidden');
+                if (el) {
+                    el.classList.add('hidden', 'opacity-0', 'scale-95');
+                    el.classList.remove('opacity-100', 'scale-100');
+                }
             });
 
             const targetEl = document.getElementById(`view-${viewName}`);
-            if (targetEl) targetEl.classList.remove('hidden');
+            if (targetEl) {
+                targetEl.classList.remove('hidden');
+                setTimeout(() => {
+                    targetEl.classList.remove('opacity-0', 'scale-95');
+                    targetEl.classList.add('opacity-100', 'scale-100');
+                }, 50);
+            }
 
             const headerStats = document.getElementById('header-stats');
             if (viewName === 'welcome') {
@@ -1895,12 +2006,11 @@
             weeksGrid.innerHTML = '';
 
             for (let w = 1; w <= 35; w++) {
-                // VIP Account gets 100% immediate unlocked access to all weeks!
                 const isPlayable = state.user.isVip ? true : (w <= state.maxPlayableWeek);
                 const weekData = contentData.weeks.find(x => x.id === w);
                 
                 const weekCard = document.createElement('div');
-                weekCard.className = `p-5 rounded-2xl border-2 transition-all flex flex-col justify-between ${
+                weekCard.className = `p-5 rounded-2xl border-2 transition-all duration-300 flex flex-col justify-between ${
                     isPlayable 
                         ? 'bg-white border-brand-200 hover:border-brand-400 hover:shadow-md cursor-pointer' 
                         : 'bg-slate-100 border-slate-200 opacity-60 cursor-not-allowed'
@@ -2331,7 +2441,6 @@
             triggerConfetti();
         }
 
-        // ADVANCED MATH MODE ENGINE
         function startAdvancedMode() {
             state.advancedState.currentStage = 1;
             state.advancedState.selectedAnswer = null;
@@ -2561,7 +2670,6 @@
             });
             area.appendChild(grid);
 
-            // Display VIP guide explanation
             const explBox = document.getElementById('vip-explanation-box');
             if (state.vipOlympicState.answersChecked[puzzle.id]) {
                 explBox.classList.remove('hidden');
@@ -2725,7 +2833,6 @@
             }
         }
 
-        // CREATE EXPLICIT VIP OR STANDARD ACCOUNT FROM PORTAL
         async function createNewAccountFromAdmin() {
             const rawCode = document.getElementById('admin-create-code').value.trim().toUpperCase();
             const name = document.getElementById('admin-create-name').value.trim();
@@ -2753,7 +2860,6 @@
                 const targetDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', rawCode);
                 await setDoc(targetDocRef, payload);
 
-                // Clear input form
                 document.getElementById('admin-create-code').value = '';
                 document.getElementById('admin-create-name').value = '';
                 document.getElementById('admin-create-password').value = '';
@@ -2805,12 +2911,10 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <!-- Name input -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Tên:</label>
                             <input type="text" id="edit-name-${s.code}" value="${s.name}" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none focus:border-brand-500">
                         </div>
-                        <!-- VIP Switch status -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Trạng thái VIP:</label>
                             <select id="edit-vip-${s.code}" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none bg-white">
@@ -2818,12 +2922,10 @@
                                 <option value="false" ${!isVip ? 'selected' : ''}>Học Sinh Thường</option>
                             </select>
                         </div>
-                        <!-- VIP Password set -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Mật khẩu Đăng Nhập VIP:</label>
                             <input type="text" id="edit-pass-${s.code}" value="${s.password || ''}" placeholder="Trống nếu không cần mật khẩu" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none">
                         </div>
-                        <!-- Companion type -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Đồng hành:</label>
                             <select id="edit-companion-${s.code}" onchange="updateCompanionAvatarLabel('${s.code}', this.value)" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none bg-white">
@@ -2832,12 +2934,10 @@
                                 <option value="turtle" ${s.companion === 'turtle' ? 'selected' : ''}>Rùa🐢</option>
                             </select>
                         </div>
-                        <!-- Gold stars -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Sao vàng (⭐):</label>
                             <input type="number" id="edit-stars-${s.code}" value="${s.stars}" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none">
                         </div>
-                        <!-- Gold cups -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Cúp vàng (🏆):</label>
                             <input type="number" id="edit-trophies-${s.code}" value="${s.trophies}" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none">
@@ -3208,14 +3308,14 @@
             document.getElementById('alert-btn').innerText = btnText;
 
             const emojiEl = document.getElementById('alert-emoji');
-            if (title.includes("Tuyệt") || title.includes("chính xác") || title.includes("Hoàn") || title.includes("Leo") || title.includes("Tạo") || title.includes("Cập Nhật") || title.includes("Kính Chào") || title.includes("XÁC NHẬN")) {
+            if (title.includes("Tuyệt") || title.includes("chính xác") || title.includes("Hoàn") || title.includes("Leo") || title.includes("Tạo") || title.includes("Cập Nhật") || title.includes("Kính Chào") || title.includes("XÁC NHẬN") || title.includes("Đăng ký")) {
                 emojiEl.innerText = "🎉";
             } else if (title.includes("Tiếc") || title.includes("Chưa") || title.includes("Sai") || title.includes("Khóa")) {
                 emojiEl.innerText = "💪";
             } else if (title.includes("Còn") || title.includes("trống")) {
                 emojiEl.innerText = "📝";
-            } else if (title.includes("Dọn") || title.includes("sao chép")) {
-                emojiEl.innerText = "📋";
+            } else if (title.includes("Dọn") || title.includes("sao chép") || title.includes("Đăng xuất")) {
+                emojiEl.innerText = "🚪";
             } else {
                 emojiEl.innerText = "💡";
             }
@@ -3231,6 +3331,7 @@
             alertModal.classList.remove('flex');
         }
 
+        // Đăng ký các hàm toàn cục để liên kết với các thẻ HTML onClick
         window.changeView = changeView;
         window.selectCompanion = selectCompanion;
         window.startStudyMode = startStudyMode;
