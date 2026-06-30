@@ -78,6 +78,7 @@
                             orange: '#f97316',
                             green: '#22c55e',
                             pink: '#ec4899',
+                            purple: '#a855f7',
                         }
                     },
                     fontFamily: {
@@ -105,20 +106,29 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); }
         }
+        .vip-shimmer {
+            background: linear-gradient(110deg, #ffe066 8%, #fff5cc 18%, #ffe066 33%);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+        }
+        @keyframes shimmer {
+            to { background-position-x: -200%; }
+        }
     </style>
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col selection:bg-brand-100 selection:text-brand-700">
 
-    <!-- TOP HEADER / PROGRESS BAR -->
     <header class="bg-white border-b-4 border-brand-100 sticky top-0 z-30 shadow-sm transition-all">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <!-- App Logo / Title -->
             <button onclick="changeView('dashboard')" class="flex items-center space-x-3 text-left focus:outline-none">
                 <div class="bg-brand-500 text-white p-2 rounded-2xl shadow-md transform rotate-[-2deg] hover:rotate-0 transition-transform">
                     <span class="text-2xl font-black">🎒 TOÁN 3</span>
                 </div>
                 <div class="hidden sm:block">
-                    <h1 class="text-lg font-black text-brand-600 leading-tight">Kết Nối Tri Thức</h1>
+                    <h1 class="text-lg font-black text-brand-600 leading-tight flex items-center gap-1">
+                        Kết Nối Tri Thức 
+                        <span id="header-vip-tag" class="hidden text-[10px] bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-900 px-1.5 py-0.5 rounded-md font-black shadow-sm uppercase tracking-wider">VIP</span>
+                    </h1>
                     <p class="text-xs text-slate-400 font-bold">Hành Trình Kỳ Thú (AI Voice & Cloud)</p>
                 </div>
             </button>
@@ -126,8 +136,8 @@
             <!-- User Stat Badges -->
             <div id="header-stats" class="hidden flex items-center space-x-2 md:space-x-4">
                 <!-- Code Student Badge -->
-                <div class="bg-indigo-100 border border-indigo-200 px-3 py-1.5 rounded-full text-xs font-extrabold text-indigo-700 flex items-center space-x-1">
-                    <span>🔑</span>
+                <div id="header-badge-container" class="bg-indigo-100 border border-indigo-200 px-3 py-1.5 rounded-full text-xs font-extrabold text-indigo-700 flex items-center space-x-1">
+                    <span id="header-badge-icon">🔑</span>
                     <span id="header-user-code">ECO000</span>
                 </div>
                 <!-- Companion Avatar -->
@@ -149,7 +159,7 @@
                 <button onclick="changeView('leaderboard')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-2 rounded-full border border-indigo-200 transition-colors flex items-center justify-center" title="Bảng vàng danh vọng">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/></svg>
                 </button>
-                <!-- Admin Lock Entry Link (Header) -->
+                <!-- Admin Control Center Button -->
                 <button onclick="openAdminLoginModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 rounded-full border border-slate-300 transition-colors flex items-center justify-center" title="Bảng quản trị Admin">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 </button>
@@ -164,15 +174,14 @@
     <!-- MAIN APP WRAPPER -->
     <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-6 flex flex-col justify-center">
 
-        <!-- 1. WELCOME SCREEN (Profile & Companion Selection with ECOXXX logic) -->
         <section id="view-welcome" class="w-full max-w-2xl mx-auto bg-white rounded-3xl border-4 border-brand-400 shadow-xl p-6 sm:p-8 text-center relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-100 rounded-full opacity-50 z-0"></div>
             <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-yellow-100 rounded-full opacity-50 z-0"></div>
 
             <div class="relative z-10">
                 <span class="text-6xl bouncy inline-block mb-4">✨✏️📐</span>
-                <h2 class="text-3xl sm:text-4xl font-black text-brand-600 mb-2">Chào mừng bạn nhỏ đến với lớp học Toán 3!</h2>
-                <p class="text-slate-500 font-bold mb-6">Hãy chọn cho mình một người bạn đồng hành tinh nghịch và Đăng ký hoặc Đăng nhập nhé!</p>
+                <h2 class="text-3xl sm:text-4xl font-black text-brand-600 mb-2">Học Toán Lớp 3 Thật Vui!</h2>
+                <p class="text-slate-500 font-bold mb-6">Đăng nhập tài khoản ECO hoặc VIP để bắt đầu hành trình toán học nhé!</p>
 
                 <!-- Tab Toggle for Login vs Register -->
                 <div class="flex justify-center bg-slate-100 p-1.5 rounded-2xl max-w-xs mx-auto mb-6">
@@ -181,22 +190,19 @@
                 </div>
 
                 <!-- Companion Grid (Always visible for registration preference) -->
-                <div id="companion-select-area" class="mb-6">
-                    <h3 class="font-black text-slate-600 mb-3">Chọn bạn đồng hành:</h3>
+                <div id="companion-select-area" class="mb-6 hidden">
+                    <h3 class="font-black text-slate-600 mb-3">Chọn bạn đồng hành tinh nghịch:</h3>
                     <div class="grid grid-cols-3 gap-3 sm:gap-4 max-w-md mx-auto">
-                        <!-- Companion 1: Rabbit -->
                         <button onclick="selectCompanion('rabbit')" id="comp-rabbit" 
                                 class="companion-card p-4 rounded-2xl border-2 border-brand-500 bg-brand-50 ring-4 ring-brand-100 flex flex-col items-center justify-center transition-all cursor-pointer">
                             <span class="text-4xl sm:text-5xl mb-2">🐰</span>
                             <span class="font-black text-xs sm:text-sm text-slate-700">Thỏ Thông Thái</span>
                         </button>
-                        <!-- Companion 2: Monkey -->
                         <button onclick="selectCompanion('monkey')" id="comp-monkey" 
                                 class="companion-card p-4 rounded-2xl border-2 border-slate-100 hover:border-brand-300 bg-slate-50 hover:bg-brand-50 flex flex-col items-center justify-center transition-all cursor-pointer">
                             <span class="text-4xl sm:text-5xl mb-2">🐒</span>
                             <span class="font-black text-xs sm:text-sm text-slate-700">Khỉ Nhanh Trí</span>
                         </button>
-                        <!-- Companion 3: Turtle -->
                         <button onclick="selectCompanion('turtle')" id="comp-turtle" 
                                 class="companion-card p-4 rounded-2xl border-2 border-slate-100 hover:border-brand-300 bg-slate-50 hover:bg-brand-50 flex flex-col items-center justify-center transition-all cursor-pointer">
                             <span class="text-4xl sm:text-5xl mb-2">🐢</span>
@@ -205,11 +211,20 @@
                     </div>
                 </div>
 
-                <!-- Input Login Area -->
-                <div id="welcome-login-box" class="mb-8 max-w-xs mx-auto space-y-3">
-                    <label for="input-login-code" class="block text-left text-sm font-extrabold text-slate-500">Mã Học Sinh Của Con Là Gì?</label>
-                    <input type="text" id="input-login-code" placeholder="Nhập mã (Ví dụ: ECO318)..." 
-                           class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-brand-400 focus:ring-0 text-center font-black text-lg text-slate-700 bg-slate-50 outline-none transition-all uppercase">
+                <!-- Input Login Area (With Adaptive Password for VIP) -->
+                <div id="welcome-login-box" class="mb-8 max-w-xs mx-auto space-y-4">
+                    <div class="space-y-1">
+                        <label for="input-login-code" class="block text-left text-xs font-extrabold text-slate-500 uppercase tracking-wider">Mã Học Sinh Của Con:</label>
+                        <input type="text" id="input-login-code" oninput="handleCodeInputCheck(this.value)" placeholder="Nhập mã (ECO318 hoặc VIP001)..." 
+                               class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-brand-400 focus:ring-0 text-center font-black text-lg text-slate-700 bg-slate-50 outline-none transition-all uppercase">
+                    </div>
+                    
+                    <!-- Dynamic password display for VIP codes -->
+                    <div id="login-password-container" class="space-y-1 hidden">
+                        <label for="input-login-password" class="block text-left text-xs font-extrabold text-amber-600 uppercase tracking-wider">🔒 Mật Khẩu Đăng Nhập VIP:</label>
+                        <input type="password" id="input-login-password" placeholder="Nhập mật khẩu VIP..." 
+                               class="w-full px-4 py-3 rounded-2xl border-2 border-amber-300 focus:border-amber-500 focus:ring-0 text-center font-black text-lg text-amber-700 bg-amber-50 outline-none transition-all">
+                    </div>
                 </div>
 
                 <!-- Input Register Area -->
@@ -230,16 +245,16 @@
             </div>
         </section>
 
-        <!-- 2. DASHBOARD (Map of Weeks & Activities) -->
         <section id="view-dashboard" class="hidden w-full space-y-6">
             <!-- Hero Dashboard Banner -->
-            <div class="bg-gradient-to-r from-brand-400 to-sky-500 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+            <div id="dashboard-banner" class="bg-gradient-to-r from-brand-400 to-sky-500 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
                 <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="text-center md:text-left space-y-2">
                         <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center justify-center md:justify-start gap-2">
                             Chào <span id="dash-user-name">Bạn nhỏ</span>! 👋
+                            <span id="dash-vip-badge" class="hidden text-xs bg-gradient-to-r from-yellow-300 to-amber-400 text-slate-900 px-2.5 py-1 rounded-full font-black shadow-sm uppercase tracking-wider vip-shimmer border border-amber-200">HỘI VIÊN VIP 👑</span>
                         </h2>
-                        <p class="text-brand-50 font-medium">Bố mẹ đã sẵn sàng cùng con chinh phục 35 tuần toán học lớp 3 Kết nối tri thức chưa nào?</p>
+                        <p id="dash-welcome-text" class="text-brand-50 font-medium">Bố mẹ đã sẵn sàng cùng con chinh phục 35 tuần toán học lớp 3 Kết nối tri thức chưa nào?</p>
                     </div>
                     <!-- Quick action buttons -->
                     <div class="flex flex-wrap justify-center gap-3">
@@ -258,7 +273,7 @@
                         <h3 class="font-black text-slate-700 text-lg flex items-center gap-2">
                             🗺️ Bản Đồ Bài Học Kỳ Thú
                         </h3>
-                        <span class="bg-brand-100 text-brand-700 font-bold px-3 py-1 rounded-full text-xs">Hành Trình Học Tập</span>
+                        <span id="map-lock-status" class="bg-brand-100 text-brand-700 font-bold px-3 py-1 rounded-full text-xs">Hành Trình Học Tập</span>
                     </div>
 
                     <!-- Grid of Weeks -->
@@ -269,6 +284,24 @@
 
                 <!-- Stats and Quick Activity Widget Column -->
                 <div class="space-y-6">
+                    <!-- SPECIAL VIP ROOM (Only displayed if VIP account) -->
+                    <div id="vip-exclusive-room" class="hidden bg-gradient-to-br from-amber-500/10 via-yellow-500/5 to-purple-500/10 rounded-3xl p-5 border-4 border-amber-400 shadow-md space-y-4 relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-24 h-24 bg-amber-400/20 rounded-full blur-xl"></div>
+                        <div class="flex items-center space-x-2 text-amber-700 border-b border-amber-200/50 pb-2">
+                            <span class="text-3xl">🏆</span>
+                            <div>
+                                <h4 class="font-black text-sm text-slate-800">PHÒNG LUYỆN ĐỀ OLYMPIC VIP</h4>
+                                <p class="text-[10px] text-purple-600 font-bold">Toán Tư Duy Chuyên Sâu Quốc Tế</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 font-bold leading-relaxed">
+                            Cung cấp các bài thi thử thách Olympic Toán học có mức độ tư duy cao kèm giải nghĩa cực chi tiết bằng giọng nói!
+                        </p>
+                        <button onclick="startVipOlympicMode()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-black text-sm rounded-xl shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                            👑 Vào Phòng Thi Olympic VIP
+                        </button>
+                    </div>
+
                     <!-- Helper Mascot Bubble -->
                     <div class="bg-white rounded-3xl p-5 border-2 border-yellow-200 shadow-sm relative">
                         <div class="flex items-start space-x-3">
@@ -292,12 +325,10 @@
                         </div>
                         <p id="donate-student-message" class="text-xs text-amber-900 font-bold leading-relaxed">Lời nhắn quyên góp...</p>
                         
-                        <!-- QR Image Container -->
                         <div class="mx-auto bg-white p-2 rounded-2xl max-w-[150px] border border-amber-200 shadow-inner">
                             <img id="donate-student-qr" src="https://placehold.co/150x150/FFF/000?text=QR+Code" alt="QR Code" class="w-full h-auto rounded-lg">
                         </div>
 
-                        <!-- Bank Details -->
                         <div class="bg-white/60 p-3 rounded-2xl text-xs space-y-1 text-left border border-amber-200">
                             <p class="font-extrabold text-amber-800">Ngân hàng: <span id="donate-student-bank" class="text-slate-800">...</span></p>
                             <p class="font-extrabold text-amber-800 flex items-center justify-between">
@@ -333,7 +364,6 @@
 
         <!-- 3. STUDY MODE (Revision / Theory & Practice Quiz) -->
         <section id="view-study" class="hidden w-full space-y-6">
-            <!-- Header for Lesson -->
             <div class="bg-white rounded-2xl p-4 border-2 border-brand-200 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
                     <button onclick="changeView('dashboard')" class="bg-slate-100 hover:bg-slate-200 p-2.5 rounded-xl transition-colors flex items-center justify-center">
@@ -344,7 +374,6 @@
                         <span class="text-xs text-brand-500 font-bold">Chế độ ôn tập lý thuyết & tự luyện tập</span>
                     </div>
                 </div>
-                <!-- Mini Score Tracker -->
                 <div class="flex items-center space-x-3">
                     <div class="bg-yellow-50 border border-yellow-200 rounded-xl px-3 py-1 text-center">
                         <p class="text-[10px] text-yellow-600 font-bold">Tiến Độ</p>
@@ -418,7 +447,6 @@
 
         <!-- 4. TEST MODE (Timed Weekly Assessment) -->
         <section id="view-test" class="hidden w-full max-w-3xl mx-auto space-y-6">
-            <!-- Header with Timer -->
             <div class="bg-white rounded-2xl p-4 border-2 border-pink-200 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
                     <span class="bg-pink-100 text-pink-600 p-2 rounded-xl flex items-center justify-center">
@@ -429,7 +457,6 @@
                         <span class="text-xs text-pink-500 font-bold">Hãy tập trung hoàn thành bài thi đúng thời gian!</span>
                     </div>
                 </div>
-                <!-- Countdown clock -->
                 <div class="bg-pink-50 border-2 border-pink-200 rounded-2xl px-4 py-2 text-center flex items-center space-x-2">
                     <span class="text-xl">⏱️</span>
                     <span id="test-clock" class="font-black text-lg text-pink-700">09:59</span>
@@ -438,17 +465,10 @@
 
             <!-- Quiz Panel -->
             <div class="bg-white rounded-3xl border-4 border-pink-300 shadow-lg p-6 relative">
-                <!-- Question indicators at top -->
-                <div id="test-indicators" class="flex items-center justify-center space-x-2 mb-6">
-                    <!-- Interactive mini dots mapping directly to questions -->
-                </div>
+                <div id="test-indicators" class="flex items-center justify-center space-x-2 mb-6"></div>
 
-                <!-- Test Body -->
-                <div id="test-question-box" class="space-y-6 min-h-[220px]">
-                    <!-- Current Test Question content -->
-                </div>
+                <div id="test-question-box" class="space-y-6 min-h-[220px]"></div>
 
-                <!-- Navigation Action bar -->
                 <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
                     <button id="btn-test-prev" onclick="navigateTestQuestion(-1)" class="px-4 py-2 bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold rounded-xl text-sm transition-all">
                         Câu Trước
@@ -470,22 +490,14 @@
             <div id="confetti-holder" class="absolute top-0 left-0 w-full h-full pointer-events-none z-0"></div>
 
             <div class="relative z-10 space-y-6">
-                <!-- Decorative Icon -->
                 <span id="result-medal-emoji" class="text-7xl bouncy inline-block">🎉</span>
-                
                 <h2 class="text-3xl font-black text-brand-600">PHIẾU ĐIỂM HOÀN THÀNH</h2>
                 <p id="result-message" class="text-slate-500 font-bold">Thật tuyệt vời! Con đã hoàn thành xuất sắc thử thách này.</p>
 
-                <!-- Visual Rating Score Stars -->
                 <div id="result-stars" class="flex justify-center space-x-2 text-4xl">
-                    <span>⭐</span>
-                    <span>⭐</span>
-                    <span>⭐</span>
-                    <span>⭐</span>
-                    <span>⭐</span>
+                    <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
                 </div>
 
-                <!-- Numerical Results Dashboard -->
                 <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                     <div class="text-center p-2 border-r border-slate-200">
                         <p class="text-xs text-slate-400 font-bold">Số Câu Đúng</p>
@@ -497,7 +509,6 @@
                     </div>
                 </div>
 
-                <!-- Back button to dashboard -->
                 <div class="pt-4 flex flex-col space-y-2">
                     <button onclick="changeView('dashboard')" class="w-full py-4 bg-brand-500 hover:bg-brand-600 text-white font-black text-lg rounded-2xl shadow-md hover:shadow-lg transition-all">
                         Trở lại Bản đồ bài học 🗺️
@@ -508,7 +519,6 @@
 
         <!-- 5. ADVANCED MATH MODE (Chinh phục Đỉnh núi) -->
         <section id="view-advanced" class="hidden w-full space-y-6">
-            <!-- Mountain Map header -->
             <div class="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-3xl p-6 text-white shadow-lg flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
                     <button onclick="changeView('dashboard')" class="bg-white/10 hover:bg-white/20 p-2.5 rounded-xl transition-colors flex items-center justify-center">
@@ -526,34 +536,24 @@
                 </div>
             </div>
 
-            <!-- Double Column layout -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                 <!-- Climbing Visualizer Left Column -->
                 <div class="lg:col-span-5 bg-white border-2 border-indigo-100 rounded-3xl p-5 flex flex-col justify-between shadow-sm min-h-[300px]">
                     <h3 class="font-black text-slate-700 text-sm mb-4 text-center">BẢN ĐỒ CHINH PHỤC ĐỈNH CAO</h3>
                     
-                    <!-- Mountain climbing drawing -->
                     <div class="relative flex-grow flex flex-col justify-between items-center px-4 py-8 bg-slate-50 rounded-2xl border border-slate-100">
-                        <!-- Summit / Target Trophy -->
                         <div class="absolute top-4 text-center">
                             <span class="text-3xl bouncy inline-block">🏆</span>
                             <p class="text-[10px] font-black text-indigo-600 uppercase">Đỉnh núi vinh quang</p>
                         </div>
 
-                        <!-- Mountain path points -->
                         <div class="w-full relative h-48 mt-8 flex flex-col justify-between items-center">
-                            <!-- Track line SVG bg -->
                             <svg class="absolute inset-0 w-full h-full text-indigo-100" fill="none" preserveAspectRatio="none">
                                 <path d="M 50 180 Q 150 140 100 100 T 200 20" stroke="currentColor" stroke-width="4" stroke-dasharray="6,6"/>
                             </svg>
-
-                            <!-- Node Points representation -->
-                            <div id="climb-nodes" class="w-full h-full relative z-10">
-                                <!-- Interactive nodes injected via JS depending on stage -->
-                            </div>
+                            <div id="climb-nodes" class="w-full h-full relative z-10"></div>
                         </div>
 
-                        <!-- Helper Mascot Cheer bubble -->
                         <div class="w-full mt-4 bg-indigo-50 border border-indigo-100 rounded-xl p-2.5 text-center">
                             <p id="climb-helper-speech" class="text-xs font-bold text-indigo-700">"Sẵn sàng chưa? Hãy vượt qua nấc thứ nhất nào!"</p>
                         </div>
@@ -562,16 +562,12 @@
 
                 <!-- Active Puzzle panel Right Column -->
                 <div class="lg:col-span-7 bg-white rounded-3xl border-4 border-indigo-400 shadow-md p-6 flex flex-col justify-between">
-                    <div id="adv-question-area" class="space-y-6">
-                        <!-- Dynamic Puzzle content -->
-                    </div>
+                    <div id="adv-question-area" class="space-y-6"></div>
 
-                    <!-- Puzzle Explanatory Guide -->
                     <div id="adv-tip-box" class="hidden mt-6 p-4 rounded-xl bg-violet-50 border border-violet-100 text-slate-700">
                         <p id="adv-tip-text" class="text-xs sm:text-sm font-bold leading-relaxed text-indigo-800"></p>
                     </div>
 
-                    <!-- Actions -->
                     <div class="mt-8 pt-4 border-t border-slate-100 flex justify-end">
                         <button id="btn-submit-adv" onclick="checkAdvancedAnswer()" class="px-8 py-3.5 bg-indigo-500 hover:bg-indigo-600 text-white font-black text-base rounded-2xl shadow-md transition-all">
                             Xác Nhận Đáp Án 🌟
@@ -581,9 +577,77 @@
             </div>
         </section>
 
+        <!-- 5.1 SPECIAL VIP OLYMPIC ROOM -->
+        <section id="view-vip-olympic" class="hidden w-full space-y-6">
+            <div class="bg-gradient-to-r from-amber-500 via-yellow-500 to-purple-600 rounded-3xl p-6 text-white shadow-lg flex flex-wrap items-center justify-between gap-4 vip-shimmer border-2 border-yellow-300">
+                <div class="flex items-center space-x-3">
+                    <button onclick="changeView('dashboard')" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-xl transition-colors flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    </button>
+                    <div>
+                        <h2 class="font-black text-slate-900 text-lg sm:text-xl flex items-center gap-1.5">
+                            Olympic Toán Tư Duy VIP 👑
+                        </h2>
+                        <span class="text-xs text-purple-900 font-extrabold bg-white/40 px-2.5 py-0.5 rounded-full">Đấu trường chuyên sâu chỉ dành cho tài khoản VIP</span>
+                    </div>
+                </div>
+                <div class="bg-slate-900/40 text-white font-extrabold px-4 py-2 rounded-2xl text-xs">
+                    Thử thách Olympic: <span id="vip-level-indicator" class="font-black text-yellow-300">1 / 5</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                <!-- Olympic visual / progress left -->
+                <div class="lg:col-span-4 bg-white border-2 border-amber-200 rounded-3xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-4 text-center">
+                        <span class="text-6xl bouncy inline-block">🚀🦁</span>
+                        <h3 class="font-black text-slate-700 text-base">Học để vươn tầm thế giới</h3>
+                        <p class="text-xs text-slate-500 font-bold leading-relaxed">
+                            Cơ cấu bài thi lấy chuẩn từ kỳ thi toán học Kangaroo quốc tế. Giải đúng mỗi câu nhận ngay <span class="text-amber-600 font-black">+10 Sao Vàng ⭐</span>.
+                        </p>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100 space-y-2 mt-6">
+                        <h4 class="font-black text-xs text-amber-800 uppercase tracking-wider flex items-center gap-1">🔊 AI Voice VIP Coaching:</h4>
+                        <p class="text-xs text-slate-600 font-semibold leading-relaxed">Nhấn nút phát âm thanh ở mỗi bài toán để nghe cô Diễm My giảng chi tiết và đưa ra định hướng tư duy thông minh nhất!</p>
+                    </div>
+                </div>
+
+                <!-- Olympic actual quiz pane right -->
+                <div class="lg:col-span-8 bg-white rounded-3xl border-4 border-amber-400 shadow-md p-6 flex flex-col justify-between">
+                    <div id="vip-question-area" class="space-y-6"></div>
+
+                    <!-- Explanatory Box (Hidden initially) -->
+                    <div id="vip-explanation-box" class="hidden mt-6 p-4 rounded-2xl bg-amber-50/60 border border-amber-300 text-slate-700 space-y-2">
+                        <div class="flex items-center justify-between text-amber-700 border-b border-amber-200 pb-1.5 mb-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xl">🏆</span>
+                                <span class="font-black text-sm">Hướng Dẫn Tư Duy Chuyên Sâu:</span>
+                            </div>
+                            <button onclick="window.speakText(document.getElementById('vip-explanation-text').innerText)" class="px-2.5 py-1 bg-amber-200 hover:bg-amber-300 text-amber-800 rounded-lg text-xs font-black flex items-center gap-1" title="Nghe giải thích">
+                                🔊 Đọc giải nghĩa VIP
+                            </button>
+                        </div>
+                        <p id="vip-explanation-text" class="text-sm font-bold leading-relaxed"></p>
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button id="btn-prev-vip" onclick="navigateVipOlympic(-1)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm rounded-xl transition-all">
+                            Trước đó
+                        </button>
+                        <button id="btn-check-vip" onclick="checkVipAnswer()" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-black text-sm rounded-xl shadow transition-all">
+                            Xác Nhận Đáp Án ✔️
+                        </button>
+                        <button id="btn-next-vip" onclick="navigateVipOlympic(1)" class="hidden px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-black text-sm rounded-xl shadow transition-all">
+                            Tiếp Theo ➡️
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- 6. LEADERBOARD VIEW -->
         <section id="view-leaderboard" class="hidden w-full max-w-xl mx-auto space-y-6">
-            <!-- Header -->
             <div class="bg-white rounded-2xl p-4 border-2 border-indigo-100 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <button onclick="changeView('dashboard')" class="bg-slate-100 hover:bg-slate-200 p-2 rounded-xl transition-colors flex items-center justify-center">
@@ -594,24 +658,20 @@
                 <span class="text-xs text-indigo-600 font-extrabold bg-indigo-50 px-2.5 py-1 rounded-full">Trực tuyến (Cloud)</span>
             </div>
 
-            <!-- Standings list -->
             <div class="bg-white rounded-3xl border-4 border-indigo-400 p-5 shadow-lg space-y-4">
                 <p class="text-xs text-slate-400 font-extrabold text-center uppercase tracking-wider">Cập nhật thời gian thực</p>
-                <div id="leaderboard-list" class="space-y-2.5">
-                    <!-- Dynamic standing rows -->
-                </div>
+                <div id="leaderboard-list" class="space-y-2.5"></div>
             </div>
         </section>
 
         <!-- 7. ADMIN DASHBOARD VIEW -->
         <section id="view-admin" class="hidden w-full space-y-6">
-            <!-- Secure Admin Header -->
             <div class="bg-slate-800 text-white rounded-3xl p-6 shadow-lg flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
                     <span class="bg-slate-700 p-3 rounded-2xl text-2xl">📊</span>
                     <div>
                         <h2 class="text-xl font-black">Cổng Quản Trị Viên (Admin)</h2>
-                        <p class="text-xs text-slate-300 font-bold">Hệ thống đồng bộ dữ liệu thi cử, theo dõi & quản lý học sinh</p>
+                        <p class="text-xs text-slate-300 font-bold">Hệ thống đồng bộ dữ liệu thi cử, theo dõi & quản lý học sinh VIP</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
@@ -656,10 +716,10 @@
             </div>
 
             <!-- TABS FOR SUBMISSIONS VS STUDENTS VS DONATE SETTINGS -->
-            <div class="flex bg-slate-100 p-1.5 rounded-2xl max-w-md">
-                <button id="admin-tab-subs" onclick="switchAdminSubView('subs')" class="flex-1 py-2.5 rounded-xl text-sm font-black transition-all bg-white text-slate-800 shadow-sm">📑 Lịch sử thi</button>
-                <button id="admin-tab-students" onclick="switchAdminSubView('students')" class="flex-1 py-2.5 rounded-xl text-sm font-black text-slate-500 hover:text-slate-800">👥 Sửa Học Sinh</button>
-                <button id="admin-tab-donate" onclick="switchAdminSubView('donate')" class="flex-1 py-2.5 rounded-xl text-sm font-black text-slate-500 hover:text-slate-800">💰 Cài đặt Donate</button>
+            <div class="flex bg-slate-100 p-1.5 rounded-2xl max-w-lg">
+                <button id="admin-tab-subs" onclick="switchAdminSubView('subs')" class="flex-1 py-2.5 rounded-xl text-xs font-black transition-all bg-white text-slate-800 shadow-sm">📑 Lịch sử thi</button>
+                <button id="admin-tab-students" onclick="switchAdminSubView('students')" class="flex-1 py-2.5 rounded-xl text-xs font-black text-slate-500 hover:text-slate-800">👥 Quản Lý Học Sinh / VIP</button>
+                <button id="admin-tab-donate" onclick="switchAdminSubView('donate')" class="flex-1 py-2.5 rounded-xl text-xs font-black text-slate-500 hover:text-slate-800">💰 Cài đặt Donate</button>
             </div>
 
             <!-- SUBVIEW 1: SUBMISSIONS LOGS -->
@@ -670,7 +730,7 @@
                         <span class="text-2xl">🔓</span>
                         <div>
                             <h3 class="font-black text-slate-800 text-lg leading-tight">Quản Lý Trạng Thế Khóa/Mở Khóa Bài Học (Cloud Sync)</h3>
-                            <p class="text-xs text-slate-400 font-bold">Lập tức thay đổi quyền truy cập của học sinh trong thời gian thực</p>
+                            <p class="text-xs text-slate-400 font-bold">Lập tức thay đổi quyền truy cập của học sinh trong thời gian thực (Lưu ý: Học sinh VIP được mở mặc định 35 tuần)</p>
                         </div>
                     </div>
                     <div class="flex flex-wrap items-center gap-3 pt-2">
@@ -681,10 +741,10 @@
                             </select>
                         </div>
                         <button onclick="unlockAllWeeks()" class="px-5 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm rounded-xl transition-all shadow-sm hover:shadow flex items-center gap-1.5 justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Mở khóa Toàn bộ 35 Tuần
+                            Mở khóa Toàn bộ 35 Tuần
                         </button>
                         <button onclick="resetWeeksLock()" class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-xs sm:text-sm rounded-xl transition-all flex items-center gap-1.5 justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg> Khóa Lại (Chỉ mở 4 Tuần đầu)
+                            Khóa Lại (Chỉ mở 4 Tuần đầu)
                         </button>
                     </div>
                 </div>
@@ -708,10 +768,10 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <button onclick="injectDemoSubmissions()" class="px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg> Nạp dữ liệu mẫu ECO001
+                                Nạp dữ liệu mẫu
                             </button>
                             <button onclick="clearAllSubmissions()" class="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg> Xóa tất cả
+                                Xóa tất cả
                             </button>
                         </div>
                     </div>
@@ -731,9 +791,7 @@
                                     <th class="p-4 text-center">Hành động</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-table-rows" class="text-sm font-bold text-slate-600 divide-y divide-slate-100">
-                                <!-- Injected rows go here -->
-                            </tbody>
+                            <tbody id="admin-table-rows" class="text-sm font-bold text-slate-600 divide-y divide-slate-100"></tbody>
                         </table>
                         <div id="admin-empty-state" class="hidden text-center py-12 space-y-2">
                             <span class="text-4xl">📭</span>
@@ -743,24 +801,51 @@
                 </div>
             </div>
 
-            <!-- SUBVIEW 2: EDIT STUDENTS DIRECTLY -->
-            <div id="admin-subview-students" class="hidden bg-white p-6 rounded-3xl border-2 border-slate-100 shadow-sm space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="font-black text-slate-800 text-lg">Danh Sách Học Sinh Hoạt Động (Real-time)</h3>
-                        <p class="text-xs text-slate-400 font-bold">Quản trị viên có thể chỉnh sửa tên, số sao, cúp của từng bé</p>
+            <!-- SUBVIEW 2: EDIT & CREATE VIP STUDENTS -->
+            <div id="admin-subview-students" class="hidden space-y-6">
+                <!-- NEW: CREATE STUDENT ACCORDION (With Standard vs VIP options) -->
+                <div class="bg-white p-6 rounded-3xl border-2 border-amber-300 shadow-sm space-y-4">
+                    <div class="flex items-center space-x-2 text-amber-700">
+                        <span class="text-2xl">👑</span>
+                        <h3 class="font-black text-lg">Cấp Phát Tài Khoản VIP Chuyên Sâu Của Admin</h3>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <input type="text" id="admin-search-student-direct" oninput="renderAdminStudents()" placeholder="Tìm kiếm nhanh tên/mã..." 
-                               class="px-3 py-1.5 rounded-xl border border-slate-300 font-bold text-xs outline-none focus:border-brand-400">
+                    <p class="text-xs text-slate-400 font-bold leading-relaxed">Cổng cấp tài khoản trực tuyến từ xa. Khi tạo VIP, học sinh có thể dùng mã và mật khẩu này để đăng nhập học chuyên sâu ngay lập tức!</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+                        <div>
+                            <label class="block text-xs font-black text-slate-500 mb-1">Mã Học Sinh:</label>
+                            <input type="text" id="admin-create-code" placeholder="Ví dụ: VIP001, ECO999..." class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold text-xs uppercase">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-slate-500 mb-1">Tên Học Sinh VIP:</label>
+                            <input type="text" id="admin-create-name" placeholder="Tên bé (VD: Minh Quân)..." class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-slate-500 mb-1">Mật khẩu VIP (Nếu cấp VIP):</label>
+                            <input type="password" id="admin-create-password" placeholder="Đặt mật khẩu..." class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold text-xs">
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="createNewAccountFromAdmin()" class="w-full py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-black text-xs rounded-xl shadow-md transition-all hover:scale-[1.03]">
+                                ➕ Cấp Tạo VIP Ngay
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Students Card List -->
-                <div id="admin-students-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Dynamic editing rows go here -->
+                <div class="bg-white p-6 rounded-3xl border-2 border-slate-100 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="font-black text-slate-800 text-lg">Danh Sách Học Sinh Hoạt Động (Real-time)</h3>
+                            <p class="text-xs text-slate-400 font-bold">Chỉnh sửa tên, số sao, cúp, mật khẩu VIP hoặc kích hoạt/vô hiệu hóa đặc quyền VIP của từng bé</p>
+                        </div>
+                        <input type="text" id="admin-search-student-direct" oninput="renderAdminStudents()" placeholder="Tìm kiếm nhanh..." 
+                               class="px-3 py-1.5 rounded-xl border border-slate-300 font-bold text-xs outline-none focus:border-brand-400">
+                    </div>
+
+                    <div id="admin-students-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    <div id="admin-students-empty" class="hidden text-center py-8 text-slate-400 font-bold">Chưa có học sinh nào đăng ký.</div>
                 </div>
-                <div id="admin-students-empty" class="hidden text-center py-8 text-slate-400 font-bold">Chưa có học sinh nào đăng ký.</div>
             </div>
 
             <!-- SUBVIEW 3: DONATE SETTINGS -->
@@ -770,10 +855,8 @@
                     <p class="text-xs text-slate-400 font-bold">Đồng bộ lên đám mây hiển thị tại Widget Dashboard học sinh</p>
                 </div>
 
-                <!-- Configuration form split -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <div class="space-y-4">
-                        <!-- Toggle show/hide -->
                         <div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
                             <span class="font-black text-sm text-slate-700">Hiển thị Widget Donate cho học sinh</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -782,7 +865,6 @@
                             </label>
                         </div>
 
-                        <!-- Bank fields -->
                         <div class="space-y-3">
                             <div>
                                 <label class="block text-xs font-black text-slate-500 mb-1">Tên Ngân hàng / Ứng dụng Ví:</label>
@@ -807,7 +889,6 @@
                         </div>
                     </div>
 
-                    <!-- QR upload area -->
                     <div class="space-y-4">
                         <label class="block text-xs font-black text-slate-500 mb-1">Mã QR Chuyển Khoản (Đăng ảnh tải lên):</label>
                         <div class="border-4 border-dashed border-slate-200 rounded-3xl p-5 text-center bg-slate-50 hover:bg-slate-100 transition-all cursor-pointer relative">
@@ -820,7 +901,6 @@
                             </div>
                         </div>
 
-                        <!-- Preview Frame -->
                         <div class="border border-slate-100 bg-white p-3 rounded-2xl flex flex-col items-center justify-center space-y-2 shadow-inner">
                             <span class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">Ảnh QR Hiện Tại</span>
                             <img id="admin-donate-preview" src="https://placehold.co/150x150/FFF/000?text=Chua+co+QR" alt="QR Preview" class="w-32 h-32 rounded-lg object-contain">
@@ -828,7 +908,6 @@
                     </div>
                 </div>
 
-                <!-- Save Action Button -->
                 <div class="pt-4 border-t border-slate-100 flex justify-end">
                     <button onclick="saveDonateConfigCloud()" class="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-md transform hover:scale-[1.03] transition-all">
                         Lưu Cấu Hình Donate Lên Đám Mây 💾
@@ -860,17 +939,11 @@
                 <span class="text-5xl inline-block bouncy">🔐</span>
                 <h3 class="font-black text-xl text-slate-800">Cổng Quản Trị Viên</h3>
                 <p class="text-xs font-bold text-slate-400 leading-relaxed">Vui lòng nhập mật khẩu quản trị để xem danh sách nộp bài và quản lý học lực.</p>
-                
-                <input type="password" id="admin-password-input" placeholder="Nhập mật khẩu..." 
-                       class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-slate-800 text-center font-black text-lg outline-none transition-all">
+                <input type="password" id="admin-password-input" placeholder="Nhập mật khẩu..." class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-slate-800 text-center font-black text-lg outline-none transition-all">
                 
                 <div class="grid grid-cols-2 gap-2 pt-2">
-                    <button onclick="closeAdminLoginModal()" class="py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black rounded-xl transition-colors">
-                        Hủy bỏ
-                    </button>
-                    <button onclick="submitAdminPassword()" class="py-3 bg-slate-800 hover:bg-slate-900 text-white font-black rounded-xl transition-colors shadow-md">
-                        Xác nhận
-                    </button>
+                    <button onclick="closeAdminLoginModal()" class="py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black rounded-xl transition-colors">Hủy bỏ</button>
+                    <button onclick="submitAdminPassword()" class="py-3 bg-slate-800 hover:bg-slate-900 text-white font-black rounded-xl transition-colors shadow-md">Xác nhận</button>
                 </div>
             </div>
         </div>
@@ -881,7 +954,7 @@
         <div class="bg-white rounded-3xl border-4 border-brand-400 max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
             <span id="alert-emoji" class="text-5xl inline-block bouncy">💡</span>
             <h3 id="alert-title" class="font-black text-xl text-slate-800">Thông Báo</h3>
-            <p id="alert-message" class="text-sm font-bold text-slate-500 leading-relaxed">Nội dung thông báo ở đây...</p>
+            <p id="alert-message" class="text-sm font-bold text-slate-500 leading-relaxed font-sans">Nội dung thông báo...</p>
             <button id="alert-btn" onclick="closeCustomAlert()" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-2xl transition-colors shadow-md">
                 Đã hiểu!
             </button>
@@ -894,7 +967,6 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CẤU HÌNH FIREBASE CHUẨN XÁC ĐÃ ĐƯỢC TÍCH HỢP
         const firebaseConfig = {
             apiKey: "AIzaSyDnQgNNqtlvDVZ3UGxnojU4kGjYSyMhdZ4",
             authDomain: "toan-lop-3.firebaseapp.com",
@@ -905,7 +977,6 @@
             measurementId: "G-D9M3YJ9RH1"
         };
 
-        // Biến môi trường
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'toan-lop-3';
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -921,9 +992,11 @@
                 avatar: "🐰",
                 stars: 0,
                 trophies: 0,
-                companion: 'rabbit'
+                companion: 'rabbit',
+                isVip: false,
+                password: ''
             },
-            currentWelcomeTab: 'login', // 'login' or 'register'
+            currentWelcomeTab: 'login',
             currentView: 'welcome',
             currentWeekId: 1,
             studyState: {
@@ -942,9 +1015,14 @@
                 selectedAnswer: null,
                 completed: false
             },
+            vipOlympicState: {
+                activeQuestionIndex: 0,
+                userSelectedAnswers: {},
+                answersChecked: {}
+            },
             adminState: {
                 unlocked: false,
-                subView: 'subs', // 'subs' or 'students' or 'donate'
+                subView: 'subs',
                 testHistory: [],
                 allStudents: []
             },
@@ -958,6 +1036,45 @@
                 qrBase64: ''
             }
         };
+
+        // VIP Olympic Questions Bank (Chuyên sâu toán tư duy logic)
+        const vipOlympicQuestions = [
+            {
+                id: "vip-o1",
+                question: "<strong>Bài toán Lát sàn (Olympic Kangaroo)</strong><br>Bạn Gấu muốn dán các miếng ghép hình tam giác đều để tạo thành một đa giác lớn hơn. Hỏi bạn ấy cần ít nhất bao nhiêu tam giác nhỏ cạnh 1cm để ghép thành một tam giác lớn có cạnh dài 4cm?",
+                options: ["9 miếng", "12 miếng", "16 miếng", "20 miếng"],
+                answer: "16 miếng",
+                explanation: "Diện tích của một tam giác tỉ lệ với bình phương cạnh của nó. Với cạnh dài 4cm, diện tích tam giác lớn bằng 4 x 4 = 16 lần diện tích tam giác nhỏ có cạnh 1cm. Do đó ta cần đúng 16 miếng ghép."
+            },
+            {
+                id: "vip-o2",
+                question: "<strong>Bài toán Cân thăng bằng (Olympic SASMO)</strong><br>Một quả xoài nặng bằng 3 quả chanh. Hai quả chanh nặng bằng 8 quả dâu tây. Hỏi một quả xoài nặng bằng bao nhiêu quả dâu tây?",
+                options: ["10 quả", "12 quả", "15 quả", "16 quả"],
+                answer: "12 quả",
+                explanation: "Dựa vào tỉ số cân thăng bằng: 2 quả chanh = 8 quả dâu tây => 1 quả chanh = 4 quả dâu tây. Mà 1 quả xoài = 3 quả chanh => 1 quả xoài = 3 x 4 = 12 quả dâu tây."
+            },
+            {
+                id: "vip-o3",
+                question: "<strong>Bài toán Trồng cây dọc đường đi</strong><br>Dọc một con đường thẳng từ thư viện đến cổng trường dài 100m, nhà trường trồng các cây xà cừ, khoảng cách giữa 2 cây liên tiếp là 5m. Biết cả 2 đầu đường đều có cây. Hỏi có tất cả bao nhiêu cây?",
+                options: ["20 cây", "21 cây", "19 cây", "22 cây"],
+                answer: "21 cây",
+                explanation: "Số khoảng cách giữa các cây là: 100 : 5 = 20 khoảng cách. Vì trồng cây ở cả 2 đầu đường nên tổng số cây phải là số khoảng cách cộng thêm 1: 20 + 1 = 21 cây."
+            },
+            {
+                id: "vip-o4",
+                question: "<strong>Bài toán Chạy đua Logic</strong><br>Trong cuộc đua chạy tiếp sức, An về đích trước Bình nhưng sau Cường, còn Dũng về đích trước Cường. Hỏi ai là người đạt huy chương vàng (về đích đầu tiên)?",
+                options: ["An", "Bình", "Cường", "Dũng"],
+                answer: "Dũng",
+                explanation: "Sắp xếp theo thứ tự về đích từ trước đến sau: An về trước Bình => An > Bình. An về sau Cường => Cường > An > Bình. Dũng về trước Cường => Dũng > Cường > An > Bình. Vậy Dũng là người về đích đầu tiên và giành Huy chương Vàng."
+            },
+            {
+                id: "vip-o5",
+                question: "<strong>Bài toán Cắt dải ruy băng</strong><br>Một người thợ có một dải ruy băng dài 12m. Mỗi ngày ông cắt ra một đoạn dài 2m để dùng. Hỏi sau bao nhiêu ngày thì ông cắt xong dải ruy băng đó?",
+                options: ["6 ngày", "5 ngày", "4 ngày", "7 ngày"],
+                answer: "5 ngày",
+                explanation: "Mỗi ngày cắt 2m. Đến ngày thứ 5, ông thợ đã cắt được 5 đoạn x 2m = 10m. Lúc này đoạn dây còn lại đúng 2m, tự động trở thành đoạn ruy băng cuối cùng mà không cần thực hiện thêm nhát cắt nào vào ngày thứ 6. Vậy chỉ mất 5 ngày."
+            }
+        ];
 
         // Static Mock Data bám sát SGK Kết nối tri thức Lớp 3
         const contentData = {
@@ -1141,7 +1258,7 @@
                         {
                             id: "w3-r2",
                             type: "mcq",
-                            question: "Nếu bán kính hình tròn là 5cm thì đường kính của nó là bao nhiêu?",
+                            question: "If bán kính hình tròn là 5cm thì đường kính của nó là bao nhiêu?",
                             options: ["10cm", "5cm", "15cm", "2.5cm"],
                             answer: "10cm",
                             explanation: "Đường kính của hình tròn luôn dài gấp đôi bán kính của hình tròn đó: 5 x 2 = 10cm."
@@ -1324,12 +1441,11 @@
             ]
         };
 
-        // FIRESTORE PATH REFERENCES (Tuân thủ luật thiết lập PATHS nghiêm ngặt)
         const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
         const configDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'settings');
         const studentsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'students');
 
-        // HỆ THỐNG GIỌNG NÓI TRÍ TUỆ NHÂN TẠO AI SPEECH (Viettel AI TTS)
+        // AI VOICE SPEAK ENGINE
         async function speakText(text) {
             if (!text) return;
 
@@ -1383,7 +1499,6 @@
             speakText(speechText);
         }
 
-        // CHẠY HỆ THỐNG XÁC THỰC AN TOÀN TRƯỚC (RULE 3)
         const initAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -1396,19 +1511,66 @@
             }
         };
 
-        // KHI ĐĂNG NHẬP THÀNH CÔNG -> THEO DÕI THỜI GIAN THỰC (REAL-TIME SNAPSHOT LISTENERS)
+        let activeStudentUnsubscribe = null;
+
+        // Dynamic checking for VIP codes on welcome login
+        function handleCodeInputCheck(value) {
+            const cleanVal = value.trim().toUpperCase();
+            const passContainer = document.getElementById('login-password-container');
+            if (cleanVal.startsWith('VIP')) {
+                passContainer.classList.remove('hidden');
+            } else {
+                passContainer.classList.add('hidden');
+            }
+        }
+        window.handleCodeInputCheck = handleCodeInputCheck;
+
+        // Active Student Cloud Sync
+        async function syncStudentProfileLive(studentCode) {
+            if (activeStudentUnsubscribe) {
+                activeStudentUnsubscribe();
+            }
+
+            const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', studentCode);
+            
+            activeStudentUnsubscribe = onSnapshot(studentDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    state.user = { code: docSnap.id, ...data };
+                    
+                    // Force VIP if code starts with VIP
+                    if (studentCode.startsWith('VIP')) {
+                        state.user.isVip = true;
+                    }
+
+                    updateStatsUI();
+                    
+                    localStorage.setItem('eco_student_code', studentCode);
+
+                    if (state.currentView === 'welcome') {
+                        changeView('dashboard');
+                        triggerConfetti();
+                        
+                        if (state.user.isVip) {
+                            showCustomAlert("👑 Kính Chào Hội Viên VIP!", `Chào mừng bạn nhỏ VIP: "${state.user.name}"! Con đã được mở khóa toàn diện 35 tuần học cùng quyền truy cập Đấu trường Olympic Tư Duy cao cấp!`, "Bắt đầu học VIP");
+                            speakText(`Chào mừng thành viên VIP ${state.user.name} đã đăng nhập lớp học chuyên sâu!`);
+                        }
+                    }
+                }
+            }, (err) => {
+                console.error("Lỗi đồng bộ thông tin học sinh:", err);
+            });
+        }
+
         onAuthStateChanged(auth, async (u) => {
             if (u) {
                 user = u;
-                console.log("Xác thực đám mây hoàn tất. User UID:", user.uid);
                 
-                // Khởi động đồng bộ tự động lưu từ trình duyệt (nếu có lưu phiên đăng nhập cũ)
                 const savedCode = localStorage.getItem('eco_student_code');
                 if (savedCode) {
                     await syncStudentProfileLive(savedCode);
                 }
 
-                // 1. Thống kê bài tập / Lịch sử làm bài (Admin)
                 onSnapshot(submissionsRef, (snapshot) => {
                     const history = [];
                     snapshot.forEach(docSnap => {
@@ -1419,30 +1581,23 @@
                     if (state.currentView === 'admin') {
                         renderAdminDashboard();
                     }
-                }, (err) => console.warn("Lỗi Real-time Submissions:", err));
+                });
 
-                // 2. Đồng bộ trạng thái KHÓA/MỞ khóa tuần học + cấu hình Donate (Real-time Config)
                 onSnapshot(configDocRef, (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
                         state.maxPlayableWeek = data.maxPlayableWeek || 4;
-                        
-                        // Map Donate Config
                         state.donateConfig.showDonate = data.showDonate || false;
                         state.donateConfig.bank = data.bank || '';
                         state.donateConfig.accountNo = data.accountNo || '';
                         state.donateConfig.accountName = data.accountName || '';
                         state.donateConfig.message = data.message || '';
                         state.donateConfig.qrBase64 = data.qrBase64 || '';
-                    } else {
-                        state.maxPlayableWeek = 4;
-                        state.donateConfig.showDonate = false;
                     }
                     renderWeeksMap();
                     syncDonateUI();
-                }, (err) => console.warn("Lỗi Real-time Config:", err));
+                });
 
-                // 3. Đồng bộ danh sách học sinh cho admin & leaderboard (Real-time Students)
                 onSnapshot(studentsCollectionRef, (snapshot) => {
                     const students = [];
                     snapshot.forEach(docSnap => {
@@ -1450,7 +1605,6 @@
                     });
                     state.adminState.allStudents = students;
 
-                    // Sắp xếp render bảng vàng vinh danh
                     const combined = [...students];
                     contentData.leaderboard.forEach(staticMember => {
                         if (!combined.some(live => live.name === staticMember.name)) {
@@ -1459,7 +1613,8 @@
                                 name: staticMember.name,
                                 avatar: staticMember.avatar,
                                 stars: staticMember.stars,
-                                trophies: staticMember.trophies
+                                trophies: staticMember.trophies,
+                                isVip: false
                             });
                         }
                     });
@@ -1470,43 +1625,13 @@
                     if (state.currentView === 'admin') {
                         renderAdminStudents();
                     }
-                }, (err) => console.warn("Lỗi Real-time Students database:", err));
+                });
             }
         });
 
-        // THIẾT LẬP ĐỒNG BỘ HỒ SƠ HỌC SINH THỜI GIAN THỰC (Real-time Student Listener)
-        let activeStudentUnsubscribe = null;
-
-        async function syncStudentProfileLive(studentCode) {
-            if (activeStudentUnsubscribe) {
-                activeStudentUnsubscribe();
-            }
-
-            const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', studentCode);
-            
-            activeStudentUnsubscribe = onSnapshot(studentDocRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    state.user = { code: docSnap.id, ...docSnap.data() };
-                    updateStatsUI();
-                    
-                    // Lưu dấu đăng nhập
-                    localStorage.setItem('eco_student_code', studentCode);
-
-                    if (state.currentView === 'welcome') {
-                        changeView('dashboard');
-                        triggerConfetti();
-                    }
-                }
-            }, (err) => {
-                console.error("Lỗi đồng bộ thông tin học sinh:", err);
-            });
-        }
-
-        // Tạo mã học sinh mới ngẫu nhiên ECOXXX và đảm bảo không trùng lặp
         async function registerNewStudentCode(name, companion) {
             if (!user) return;
             
-            // Lấy danh sách mã hiện tại
             const snap = await getDocs(studentsCollectionRef);
             const existingCodes = [];
             snap.forEach(d => existingCodes.push(d.id));
@@ -1516,7 +1641,7 @@
             let attempts = 0;
 
             while (!isUnique && attempts < 100) {
-                const randNum = Math.floor(100 + Math.random() * 900); // 100 đến 999
+                const randNum = Math.floor(100 + Math.random() * 900);
                 newCode = `ECO${randNum}`;
                 if (!existingCodes.includes(newCode)) {
                     isUnique = true;
@@ -1524,7 +1649,6 @@
                 attempts++;
             }
 
-            // Gán avatar theo companion
             let avatar = "🐰";
             if (companion === 'monkey') avatar = "🐒";
             if (companion === 'turtle') avatar = "🐢";
@@ -1536,17 +1660,17 @@
                 stars: 0,
                 trophies: 0,
                 uid: user.uid,
+                isVip: false,
+                password: '',
                 timestamp: Date.now()
             };
 
-            // Ghi nhận lên Firestore
             const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', newCode);
             await setDoc(studentDocRef, defaultPayload);
 
             return newCode;
         }
 
-        // ĐỒNG BỘ ĐÁM MÂY KHI CHƠI ĐẠT ĐIỂM CAO
         async function saveStudentProfileToCloud() {
             if (!user || !state.user.code || state.user.code === 'ECO000') return;
             const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', state.user.code);
@@ -1556,54 +1680,65 @@
                 companion: state.user.companion,
                 avatar: state.user.avatar,
                 stars: state.user.stars,
-                trophies: state.user.trophies
+                trophies: state.user.trophies,
+                isVip: state.user.isVip || false,
+                password: state.user.password || ''
             };
 
             try {
                 await setDoc(studentDocRef, payload, { merge: true });
             } catch (e) {
-                console.warn("Lỗi lưu trữ dữ liệu đám mây:", e);
+                console.warn("Lỗi lưu trữ đám mây:", e);
             }
         }
 
-        // ĐĂNG NHẬP HOẶC ĐĂNG KÝ HỌC SINH TẠI MÀN HÌNH CHÀO MỪNG
         async function handleWelcomeSubmit() {
             if (state.currentWelcomeTab === 'login') {
                 const codeInput = document.getElementById('input-login-code').value.trim().toUpperCase();
                 if (!codeInput) {
-                    showCustomAlert("⚠️ Nhập thiếu!", "Con hãy điền mã học sinh ECOXXX của mình nhé!");
+                    showCustomAlert("⚠️ Nhập thiếu!", "Con hãy điền mã học sinh của mình nhé!");
                     return;
                 }
 
-                // Kiểm tra xem mã này có tồn tại trên Firestore
                 const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', codeInput);
                 const docSnap = await getDoc(studentDocRef);
 
                 if (docSnap.exists()) {
+                    const studentData = docSnap.data();
+                    
+                    // If account is VIP (has password or code starts with VIP)
+                    if (codeInput.startsWith('VIP') || studentData.isVip) {
+                        const enteredPassword = document.getElementById('input-login-password').value;
+                        const correctPassword = studentData.password || '';
+
+                        if (enteredPassword !== correctPassword) {
+                            showCustomAlert("❌ Sai Mật Khẩu VIP!", "Tài khoản VIP yêu cầu nhập mật khẩu bảo mật chính xác do Admin cấp!");
+                            return;
+                        }
+                    }
+
                     await syncStudentProfileLive(codeInput);
                 } else {
-                    showCustomAlert("😢 Sai Mã Học Sinh!", `Mã học sinh "${codeInput}" không có trên hệ thống. Con hãy kiểm tra kỹ hoặc bấm tab "Đăng Ký Mới" để tạo mã nhé!`);
+                    showCustomAlert("😢 Không Tìm Thấy Mã!", `Mã học sinh "${codeInput}" không tồn tại. Con hãy đăng ký mới hoặc liên hệ Admin/Thầy Cô để cấp tài khoản VIP nhé!`);
                 }
 
             } else {
                 const nickname = document.getElementById('input-nickname').value.trim();
                 if (!nickname) {
-                    showCustomAlert("⚠️ Nhập thiếu tên!", "Hãy nhập tên của bạn nhỏ để bắt đầu hành trình toán học nhé!");
+                    showCustomAlert("⚠️ Nhập thiếu tên!", "Hãy nhập tên của bạn nhỏ để bắt đầu hành trình nhé!");
                     return;
                 }
 
-                // Đăng ký mã mới
                 try {
                     const newCode = await registerNewStudentCode(nickname, state.user.companion);
                     await syncStudentProfileLive(newCode);
-                    showCustomAlert("🎉 Đăng Ký Thành Công!", `Hệ thống đã tặng cho con mã học sinh đặc biệt: "${newCode}". Hãy ghi nhớ mã này để lần sau tiếp tục đăng nhập nhé!`, "Bắt đầu học!");
+                    showCustomAlert("🎉 Đăng Ký Thành Công!", `Hệ thống đã tạo mã học sinh tự động: "${newCode}". Con hãy ghi nhớ mã này nhé!`, "Bắt đầu học!");
                 } catch (err) {
-                    showCustomAlert("❌ Có lỗi xảy ra!", "Không thể đăng ký mã mới, vui lòng thử lại sau.");
+                    showCustomAlert("❌ Lỗi xảy ra!", "Không thể tạo tài khoản mới lúc này.");
                 }
             }
         }
 
-        // ĐĂNG XUẤT HỌC SINH
         function logoutStudent() {
             localStorage.removeItem('eco_student_code');
             if (activeStudentUnsubscribe) {
@@ -1615,10 +1750,12 @@
                 avatar: "🐰",
                 stars: 0,
                 trophies: 0,
-                companion: 'rabbit'
+                companion: 'rabbit',
+                isVip: false,
+                password: ''
             };
             changeView('welcome');
-            showCustomAlert("🚪 Đã đăng xuất!", "Đã đăng xuất tài khoản thành công.");
+            showCustomAlert("🚪 Đã đăng xuất!", "Tạm biệt bạn nhỏ, chúc con học tập tốt!");
         }
 
         function switchWelcomeTab(tab) {
@@ -1647,9 +1784,8 @@
             }
         }
 
-        // VIEW ENGINE
         function changeView(viewName) {
-            const views = ['welcome', 'dashboard', 'study', 'test', 'test-result', 'advanced', 'leaderboard', 'admin'];
+            const views = ['welcome', 'dashboard', 'study', 'test', 'test-result', 'advanced', 'vip-olympic', 'leaderboard', 'admin'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) el.classList.add('hidden');
@@ -1712,41 +1848,45 @@
             document.getElementById('header-user-code').innerText = state.user.code;
             document.getElementById('dash-user-name').innerText = state.user.name;
             document.getElementById('mascot-avatar').innerText = state.user.avatar;
-        }
 
-        // ĐỒNG BỘ MỤC QUYÊN GÓP (DONATE) DƯỚI CLIENT HỌC SINH
-        function syncDonateUI() {
-            const card = document.getElementById('student-donate-card');
-            if (!card) return;
+            // Handle VIP exclusive tags & panels
+            const vipTag = document.getElementById('header-vip-tag');
+            const dashBadge = document.getElementById('dash-vip-badge');
+            const vipRoom = document.getElementById('vip-exclusive-room');
+            const mapLockStatus = document.getElementById('map-lock-status');
+            const banner = document.getElementById('dashboard-banner');
+            const badgeContainer = document.getElementById('header-badge-container');
+            const badgeIcon = document.getElementById('header-badge-icon');
 
-            if (state.donateConfig.showDonate) {
-                card.classList.remove('hidden');
-                document.getElementById('donate-student-message').innerText = state.donateConfig.message || 'Hãy ủng hộ một ly sữa để giúp lớp học tiếp tục vận hành nhé!';
-                document.getElementById('donate-student-bank').innerText = state.donateConfig.bank || '...';
-                document.getElementById('donate-student-acc').innerText = state.donateConfig.accountNo || '...';
-                document.getElementById('donate-student-name').innerText = state.donateConfig.accountName || '...';
+            if (state.user.isVip) {
+                vipTag.classList.remove('hidden');
+                dashBadge.classList.remove('hidden');
+                vipRoom.classList.remove('hidden');
                 
-                if (state.donateConfig.qrBase64) {
-                    document.getElementById('donate-student-qr').src = state.donateConfig.qrBase64;
-                } else {
-                    document.getElementById('donate-student-qr').src = "https://placehold.co/150x150/FFF/000?text=QR+Code";
-                }
-            } else {
-                card.classList.add('hidden');
-            }
-        }
+                banner.className = "bg-gradient-to-r from-amber-500 via-orange-400 to-purple-600 rounded-3xl p-6 text-slate-900 shadow-lg relative overflow-hidden vip-shimmer border-2 border-yellow-300";
+                document.getElementById('dash-welcome-text').innerText = "Chào mừng Hội viên VIP! Con được đặc cách mở khóa toàn bộ 35 tuần học và phòng Olympic chuyên sâu!";
+                document.getElementById('dash-welcome-text').className = "text-slate-800 font-extrabold";
+                
+                badgeContainer.className = "bg-amber-100 border-2 border-amber-400 px-3 py-1.5 rounded-full text-xs font-black text-amber-800 flex items-center space-x-1 vip-shimmer";
+                badgeIcon.innerText = "👑";
 
-        // SAO CHÉP SỐ TÀI KHOẢN AN TOÀN TRONG IFRAME
-        function copyAccountNo() {
-            const accNo = state.donateConfig.accountNo;
-            if (!accNo) return;
-            const tempInput = document.createElement('input');
-            tempInput.value = accNo;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            showCustomAlert("📋 Đã sao chép!", `Đã sao chép số tài khoản: ${accNo}`);
+                mapLockStatus.innerText = "Đặc Quyền VIP: Mở Khóa 35 Tuần 🌟";
+                mapLockStatus.className = "bg-amber-100 text-amber-800 font-black px-3 py-1 rounded-full text-xs vip-shimmer border border-amber-300";
+            } else {
+                vipTag.classList.add('hidden');
+                dashBadge.classList.add('hidden');
+                vipRoom.classList.add('hidden');
+                
+                banner.className = "bg-gradient-to-r from-brand-400 to-sky-500 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden";
+                document.getElementById('dash-welcome-text').innerText = "Bố mẹ đã sẵn sàng cùng con chinh phục 35 tuần toán học lớp 3 Kết nối tri thức chưa nào?";
+                document.getElementById('dash-welcome-text').className = "text-brand-50 font-medium";
+                
+                badgeContainer.className = "bg-indigo-100 border border-indigo-200 px-3 py-1.5 rounded-full text-xs font-extrabold text-indigo-700 flex items-center space-x-1";
+                badgeIcon.innerText = "🔑";
+
+                mapLockStatus.innerText = "Hành Trình Học Tập";
+                mapLockStatus.className = "bg-brand-100 text-brand-700 font-bold px-3 py-1 rounded-full text-xs";
+            }
         }
 
         function renderWeeksMap() {
@@ -1755,7 +1895,8 @@
             weeksGrid.innerHTML = '';
 
             for (let w = 1; w <= 35; w++) {
-                const isPlayable = w <= state.maxPlayableWeek; 
+                // VIP Account gets 100% immediate unlocked access to all weeks!
+                const isPlayable = state.user.isVip ? true : (w <= state.maxPlayableWeek);
                 const weekData = contentData.weeks.find(x => x.id === w);
                 
                 const weekCard = document.createElement('div');
@@ -1768,7 +1909,7 @@
                 let headerHtml = `
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-black text-brand-500 uppercase">Tuần ${w}</span>
-                        ${isPlayable ? '<span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">Mở khóa ✨</span>' : '<span class="text-xs text-slate-400">🔒 Chờ mở</span>'}
+                        ${isPlayable ? `<span class="text-xs ${state.user.isVip ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-700'} px-2 py-0.5 rounded-full font-bold">${state.user.isVip ? 'VIP Mở Khóa 👑' : 'Mở khóa ✨'}</span>` : '<span class="text-xs text-slate-400">🔒 Chờ mở</span>'}
                     </div>
                 `;
 
@@ -1974,7 +2115,6 @@
             }
         }
 
-        // TIMED TEST ENGINE
         function startTestMode(weekId) {
             state.currentWeekId = weekId;
             const weekData = contentData.weeks.find(x => x.id === weekId);
@@ -2146,7 +2286,6 @@
             const secElapsed = timeElapsed % 60;
             const durationStr = `${minElapsed.toString().padStart(2, '0')}:${secElapsed.toString().padStart(2, '0')}`;
 
-            // Tải dữ liệu nộp bài lên CLOUD FIRESTORE
             const cloudRecord = {
                 studentName: state.user.name || "Học sinh ẩn danh",
                 studentCode: state.user.code || "ECO000",
@@ -2192,7 +2331,7 @@
             triggerConfetti();
         }
 
-        // ADVANCED MODE ENGINE
+        // ADVANCED MATH MODE ENGINE
         function startAdvancedMode() {
             state.advancedState.currentStage = 1;
             state.advancedState.selectedAnswer = null;
@@ -2358,6 +2497,126 @@
             updateStatsUI();
         }
 
+        function startVipOlympicMode() {
+            if (!state.user.isVip) {
+                showCustomAlert("🔒 Tính năng VIP!", "Rất tiếc, đấu trường thi thử Olympic chỉ dành riêng cho tài khoản VIP đã kích hoạt!");
+                return;
+            }
+            state.vipOlympicState.activeQuestionIndex = 0;
+            state.vipOlympicState.userSelectedAnswers = {};
+            state.vipOlympicState.answersChecked = {};
+
+            loadVipOlympicQuestion();
+            changeView('vip-olympic');
+        }
+        window.startVipOlympicMode = startVipOlympicMode;
+
+        function loadVipOlympicQuestion() {
+            const qIndex = state.vipOlympicState.activeQuestionIndex;
+            const total = vipOlympicQuestions.length;
+            document.getElementById('vip-level-indicator').innerText = `${qIndex + 1} / ${total}`;
+
+            const puzzle = vipOlympicQuestions[qIndex];
+            const area = document.getElementById('vip-question-area');
+            area.innerHTML = '';
+
+            const title = document.createElement('h3');
+            title.className = "font-black text-slate-800 text-base sm:text-lg leading-relaxed p-4 bg-amber-50 rounded-2xl border border-amber-200 flex items-start justify-between gap-2";
+            title.innerHTML = `
+                <span id="vip-q-text" class="flex-1">${puzzle.question}</span>
+                <button onclick="window.speakText(document.getElementById('vip-q-text').innerText)" class="p-2 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl text-xs flex-shrink-0 transition-all flex items-center justify-center" title="Nghe câu hỏi VIP">
+                    🔊 Đọc bài
+                </button>
+            `;
+            area.appendChild(title);
+
+            const grid = document.createElement('div');
+            grid.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4";
+
+            puzzle.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = `p-4 rounded-2xl border-2 text-left font-black text-sm sm:text-base transition-all flex items-center justify-between ${
+                    state.vipOlympicState.userSelectedAnswers[puzzle.id] === opt
+                        ? 'border-amber-500 bg-amber-50 text-amber-700 ring-2 ring-amber-100'
+                        : 'border-slate-100 bg-slate-50 hover:bg-slate-100 text-slate-600'
+                }`;
+                btn.innerHTML = `<span>${opt}</span> <div class="w-5 h-5 rounded-full border-2 border-slate-300 flex items-center justify-center"><div class="w-2.5 h-2.5 rounded-full bg-amber-500 transform ${state.vipOlympicState.userSelectedAnswers[puzzle.id] === opt ? 'scale-100' : 'scale-0'} transition-transform"></div></div>`;
+                
+                if (state.vipOlympicState.answersChecked[puzzle.id]) {
+                    btn.disabled = true;
+                    if (opt === puzzle.answer) {
+                        btn.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-700 font-black text-sm sm:text-base flex items-center justify-between";
+                        btn.innerHTML = `<span>${opt}</span> <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+                    } else if (state.vipOlympicState.userSelectedAnswers[puzzle.id] === opt) {
+                        btn.className = "p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 text-rose-700 font-black text-sm sm:text-base flex items-center justify-between";
+                        btn.innerHTML = `<span>${opt}</span> <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`;
+                    }
+                } else {
+                    btn.addEventListener('click', () => {
+                        state.vipOlympicState.userSelectedAnswers[puzzle.id] = opt;
+                        loadVipOlympicQuestion();
+                    });
+                }
+                grid.appendChild(btn);
+            });
+            area.appendChild(grid);
+
+            // Display VIP guide explanation
+            const explBox = document.getElementById('vip-explanation-box');
+            if (state.vipOlympicState.answersChecked[puzzle.id]) {
+                explBox.classList.remove('hidden');
+                document.getElementById('vip-explanation-text').innerText = puzzle.explanation;
+                document.getElementById('btn-check-vip').classList.add('hidden');
+                document.getElementById('btn-next-vip').classList.remove('hidden');
+            } else {
+                explBox.classList.add('hidden');
+                document.getElementById('btn-check-vip').classList.remove('hidden');
+                document.getElementById('btn-next-vip').classList.add('hidden');
+            }
+        }
+        window.loadVipOlympicQuestion = loadVipOlympicQuestion;
+
+        async function checkVipAnswer() {
+            const qIndex = state.vipOlympicState.activeQuestionIndex;
+            const puzzle = vipOlympicQuestions[qIndex];
+            const ans = state.vipOlympicState.userSelectedAnswers[puzzle.id];
+
+            if (!ans) {
+                showCustomAlert("⚠️ Nhập thiếu!", "Bé ơi, chọn đáp án của mình trước nhé!");
+                return;
+            }
+
+            state.vipOlympicState.answersChecked[puzzle.id] = true;
+
+            if (ans === puzzle.answer) {
+                triggerConfetti();
+                state.user.stars += 10;
+                showCustomAlert("👑 ĐÁP ÁN CHÍNH XÁC!", "Đúng chuẩn tư duy Olympic! Bé đã nhận được quả ngọt xứng đáng: (+10 Sao Vàng ⭐)!", "Tuyệt diệu");
+                speakText("Hoan hô! Bé đã tìm ra tư duy cốt lõi và hoàn thành chính xác câu hỏi này!");
+            } else {
+                showCustomAlert("😢 Tiếc Quá!", "Đáp án chưa đúng. Đọc kỹ phần hướng dẫn giải nghĩa VIP để rút kinh nghiệm nhé!", "Cố lên");
+            }
+
+            await saveStudentProfileToCloud();
+            updateStatsUI();
+            loadVipOlympicQuestion();
+        }
+        window.checkVipAnswer = checkVipAnswer;
+
+        function navigateVipOlympic(dir) {
+            const total = vipOlympicQuestions.length;
+            const target = state.vipOlympicState.activeQuestionIndex + dir;
+
+            if (target >= 0 && target < total) {
+                state.vipOlympicState.activeQuestionIndex = target;
+                loadVipOlympicQuestion();
+            } else if (target >= total) {
+                showCustomAlert("🏆 HOÀN THÀNH OLYMPIC!", "Xin chúc mừng bạn nhỏ VIP xuất sắc! Con đã tranh tài rực rỡ qua tất cả các thử thách tư duy quốc tế!", "Trở về Trang Chủ");
+                changeView('dashboard');
+            }
+        }
+        window.navigateVipOlympic = navigateVipOlympic;
+
         function renderLeaderboardWithData(listData) {
             const list = document.getElementById('leaderboard-list');
             if (!list) return;
@@ -2383,7 +2642,7 @@
                         <span class="text-xl">${member.avatar || '🐰'}</span>
                         <div>
                             <span class="font-black text-sm sm:text-base ${isMe ? 'text-amber-800' : 'text-slate-700'}">${member.name} ${isMe ? '(Con)' : ''}</span>
-                            <span class="block text-[10px] text-slate-400 font-extrabold uppercase">${member.code}</span>
+                            <span class="block text-[10px] text-slate-400 font-extrabold uppercase">${member.code} ${member.isVip ? '👑' : ''}</span>
                         </div>
                     </div>
                     <div class="flex items-center space-x-3 text-xs sm:text-sm">
@@ -2395,7 +2654,6 @@
             });
         }
 
-        // SECURE ADMIN LOGINS
         function openAdminLoginModal() {
             document.getElementById('admin-password-input').value = '';
             const modal = document.getElementById('admin-login-modal');
@@ -2416,7 +2674,6 @@
                 closeAdminLoginModal();
                 state.adminState.unlocked = true;
                 
-                // Điền thông tin cấu hình donate hiện có vào form quản lý
                 document.getElementById('admin-donate-toggle').checked = state.donateConfig.showDonate;
                 document.getElementById('admin-donate-bank').value = state.donateConfig.bank;
                 document.getElementById('admin-donate-acc').value = state.donateConfig.accountNo;
@@ -2436,11 +2693,9 @@
             changeView('dashboard');
         }
 
-        // CHUYỂN ĐỔI TAB PHÂN HỆ QUẢN TRỊ ADMIN
         function switchAdminSubView(view) {
             state.adminState.subView = view;
             
-            // UI tab class updates
             const tabSubs = document.getElementById('admin-tab-subs');
             const tabStudents = document.getElementById('admin-tab-students');
             const tabDonate = document.getElementById('admin-tab-donate');
@@ -2449,28 +2704,68 @@
             const viewStudents = document.getElementById('admin-subview-students');
             const viewDonate = document.getElementById('admin-subview-donate');
 
-            tabSubs.className = "flex-1 py-2.5 rounded-xl text-sm font-black text-slate-500 hover:text-slate-800 transition-all";
-            tabStudents.className = "flex-1 py-2.5 rounded-xl text-sm font-black text-slate-500 hover:text-slate-800 transition-all";
-            tabDonate.className = "flex-1 py-2.5 rounded-xl text-sm font-black text-slate-500 hover:text-slate-800 transition-all";
+            tabSubs.className = "flex-1 py-2.5 rounded-xl text-xs font-black text-slate-500 hover:text-slate-800 transition-all";
+            tabStudents.className = "flex-1 py-2.5 rounded-xl text-xs font-black text-slate-500 hover:text-slate-800 transition-all";
+            tabDonate.className = "flex-1 py-2.5 rounded-xl text-xs font-black text-slate-500 hover:text-slate-800 transition-all";
 
             viewSubs.classList.add('hidden');
             viewStudents.classList.add('hidden');
             viewDonate.classList.add('hidden');
 
             if (view === 'subs') {
-                tabSubs.className = "flex-1 py-2.5 rounded-xl text-sm font-black transition-all bg-white text-slate-800 shadow-sm";
+                tabSubs.className = "flex-1 py-2.5 rounded-xl text-xs font-black transition-all bg-white text-slate-800 shadow-sm";
                 viewSubs.classList.remove('hidden');
             } else if (view === 'students') {
-                tabStudents.className = "flex-1 py-2.5 rounded-xl text-sm font-black transition-all bg-white text-slate-800 shadow-sm";
+                tabStudents.className = "flex-1 py-2.5 rounded-xl text-xs font-black transition-all bg-white text-slate-800 shadow-sm";
                 viewStudents.classList.remove('hidden');
                 renderAdminStudents();
             } else {
-                tabDonate.className = "flex-1 py-2.5 rounded-xl text-sm font-black transition-all bg-white text-slate-800 shadow-sm";
+                tabDonate.className = "flex-1 py-2.5 rounded-xl text-xs font-black transition-all bg-white text-slate-800 shadow-sm";
                 viewDonate.classList.remove('hidden');
             }
         }
 
-        // CHỈNH SỬA & HIỂN THỊ THÔNG TIN CHI TIẾT HỌC SINH TẠI TRANG ADMIN
+        // CREATE EXPLICIT VIP OR STANDARD ACCOUNT FROM PORTAL
+        async function createNewAccountFromAdmin() {
+            const rawCode = document.getElementById('admin-create-code').value.trim().toUpperCase();
+            const name = document.getElementById('admin-create-name').value.trim();
+            const password = document.getElementById('admin-create-password').value.trim();
+
+            if (!rawCode || !name) {
+                showCustomAlert("⚠️ Thao tác thiếu!", "Phải nhập đầy đủ Mã Học Sinh và Tên của bé!");
+                return;
+            }
+
+            const isVip = rawCode.startsWith('VIP') || password.length > 0;
+
+            const payload = {
+                name: name,
+                companion: 'rabbit',
+                avatar: '🐰',
+                stars: 0,
+                trophies: 0,
+                isVip: isVip,
+                password: password,
+                timestamp: Date.now()
+            };
+
+            try {
+                const targetDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', rawCode);
+                await setDoc(targetDocRef, payload);
+
+                // Clear input form
+                document.getElementById('admin-create-code').value = '';
+                document.getElementById('admin-create-name').value = '';
+                document.getElementById('admin-create-password').value = '';
+
+                triggerConfetti();
+                showCustomAlert("🎉 Cấp Phát Thành Công!", `Tài khoản "${rawCode}" (${isVip ? 'VIP' : 'Thường'}) đã được tạo và kích hoạt trực tuyến!`);
+            } catch (err) {
+                showCustomAlert("❌ Gặp lỗi!", err.message);
+            }
+        }
+        window.createNewAccountFromAdmin = createNewAccountFromAdmin;
+
         function renderAdminStudents() {
             const container = document.getElementById('admin-students-list');
             const emptyState = document.getElementById('admin-students-empty');
@@ -2491,14 +2786,18 @@
             emptyState.classList.add('hidden');
 
             filtered.forEach(s => {
+                const isVip = s.isVip || s.code.startsWith('VIP');
                 const card = document.createElement('div');
-                card.className = "p-5 bg-slate-50 border border-slate-200 rounded-3xl space-y-4 shadow-sm";
+                card.className = `p-5 border rounded-3xl space-y-4 shadow-sm ${isVip ? 'bg-amber-50/50 border-amber-300 ring-2 ring-amber-100' : 'bg-slate-50 border-slate-200'}`;
                 card.innerHTML = `
                     <div class="flex items-center justify-between border-b border-slate-200 pb-2">
                         <div class="flex items-center space-x-2">
                             <span class="text-2xl" id="avatar-label-${s.code}">${s.avatar || '🐰'}</span>
                             <div>
-                                <span class="text-xs font-black text-slate-400 uppercase">${s.code}</span>
+                                <span class="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                                    ${s.code} 
+                                    ${isVip ? '<span class="bg-amber-500 text-slate-900 px-1 py-0.2 text-[8px] rounded font-black">VIP</span>' : ''}
+                                </span>
                                 <h4 class="font-black text-sm text-slate-700">Chỉnh sửa học sinh</h4>
                             </div>
                         </div>
@@ -2506,12 +2805,25 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <!-- Tên học sinh -->
+                        <!-- Name input -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Tên:</label>
                             <input type="text" id="edit-name-${s.code}" value="${s.name}" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none focus:border-brand-500">
                         </div>
-                        <!-- Bạn đồng hành -->
+                        <!-- VIP Switch status -->
+                        <div>
+                            <label class="block font-black text-slate-500 mb-1">Trạng thái VIP:</label>
+                            <select id="edit-vip-${s.code}" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none bg-white">
+                                <option value="true" ${isVip ? 'selected' : ''}>Hội Viên VIP 👑</option>
+                                <option value="false" ${!isVip ? 'selected' : ''}>Học Sinh Thường</option>
+                            </select>
+                        </div>
+                        <!-- VIP Password set -->
+                        <div>
+                            <label class="block font-black text-slate-500 mb-1">Mật khẩu Đăng Nhập VIP:</label>
+                            <input type="text" id="edit-pass-${s.code}" value="${s.password || ''}" placeholder="Trống nếu không cần mật khẩu" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none">
+                        </div>
+                        <!-- Companion type -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Đồng hành:</label>
                             <select id="edit-companion-${s.code}" onchange="updateCompanionAvatarLabel('${s.code}', this.value)" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none bg-white">
@@ -2520,12 +2832,12 @@
                                 <option value="turtle" ${s.companion === 'turtle' ? 'selected' : ''}>Rùa🐢</option>
                             </select>
                         </div>
-                        <!-- Sao vàng -->
+                        <!-- Gold stars -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Sao vàng (⭐):</label>
                             <input type="number" id="edit-stars-${s.code}" value="${s.stars}" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none">
                         </div>
-                        <!-- Cúp vàng -->
+                        <!-- Gold cups -->
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Cúp vàng (🏆):</label>
                             <input type="number" id="edit-trophies-${s.code}" value="${s.trophies}" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none">
@@ -2540,7 +2852,6 @@
             });
         }
 
-        // Tự động cập nhật nhãn Avatar khi đổi Thỏ/Khỉ/Rùa trên Admin panel
         function updateCompanionAvatarLabel(code, value) {
             const label = document.getElementById(`avatar-label-${code}`);
             if (!label) return;
@@ -2549,12 +2860,13 @@
             if (value === 'turtle') label.innerText = '🐢';
         }
 
-        // LƯU TRỰC TIẾP SỰ THAY ĐỔI CỦA HỌC SINH LÊN CLOUD
         async function saveStudentDirectCloud(code) {
             const name = document.getElementById(`edit-name-${code}`).value.trim();
             const companion = document.getElementById(`edit-companion-${code}`).value;
             const stars = parseInt(document.getElementById(`edit-stars-${code}`).value, 10) || 0;
             const trophies = parseInt(document.getElementById(`edit-trophies-${code}`).value, 10) || 0;
+            const isVip = document.getElementById(`edit-vip-${code}`).value === 'true';
+            const password = document.getElementById(`edit-pass-${code}`).value.trim();
 
             if (!name) {
                 showCustomAlert("⚠️ Nhập thiếu tên!", "Hãy nhập tên học sinh trước khi lưu!");
@@ -2572,17 +2884,18 @@
                     companion: companion,
                     avatar: avatar,
                     stars: stars,
-                    trophies: trophies
+                    trophies: trophies,
+                    isVip: isVip,
+                    password: password
                 }, { merge: true });
 
                 triggerConfetti();
-                showCustomAlert("🎉 Đã Cập Nhật Đám Mây!", `Thông tin của học sinh "${code}" đã được thay đổi thành công!`, "Tuyệt vời");
+                showCustomAlert("🎉 Đã Cập Nhật Đám Mây!", `Thông tin học sinh "${code}" đã được thay đổi thành công!`, "Tuyệt vời");
             } catch (err) {
                 showCustomAlert("❌ Có lỗi xảy ra!", err.message);
             }
         }
 
-        // XÓA HỌC SINH KHỎI DATABASE CLOUD
         async function deleteStudentCloud(code) {
             try {
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', code);
@@ -2593,7 +2906,6 @@
             }
         }
 
-        // NÉN VÀ CHUYỂN ĐỔI ẢNH QR CODE SANG DẠNG BASE64 TRƯỚC KHI LÊN CLOUD
         function previewAndCompressQR(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -2602,11 +2914,10 @@
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    // Sử dụng Canvas để nén ảnh tối đa và giữ kích thước tiêu chuẩn
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    const maxDim = 300; // Kích thước nén ảnh vừa vặn lưu Base64
+                    const maxDim = 300;
                     let width = img.width;
                     let height = img.height;
 
@@ -2626,7 +2937,6 @@
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Chuyển sang Data URL nén chất lượng 0.7
                     const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
                     
                     state.donateConfig.qrBase64 = compressedBase64;
@@ -2637,7 +2947,6 @@
             reader.readAsDataURL(file);
         }
 
-        // LƯU CẤU HÌNH DONATE LÊN FIRESTORE
         async function saveDonateConfigCloud() {
             if (!user) return;
 
@@ -2663,6 +2972,39 @@
             } catch (err) {
                 showCustomAlert("❌ Không thể lưu cấu hình!", err.message);
             }
+        }
+
+        function syncDonateUI() {
+            const card = document.getElementById('student-donate-card');
+            if (!card) return;
+
+            if (state.donateConfig.showDonate) {
+                card.classList.remove('hidden');
+                document.getElementById('donate-student-message').innerText = state.donateConfig.message || 'Hãy ủng hộ một ly sữa để giúp lớp học tiếp tục vận hành nhé!';
+                document.getElementById('donate-student-bank').innerText = state.donateConfig.bank || '...';
+                document.getElementById('donate-student-acc').innerText = state.donateConfig.accountNo || '...';
+                document.getElementById('donate-student-name').innerText = state.donateConfig.accountName || '...';
+                
+                if (state.donateConfig.qrBase64) {
+                    document.getElementById('donate-student-qr').src = state.donateConfig.qrBase64;
+                } else {
+                    document.getElementById('donate-student-qr').src = "https://placehold.co/150x150/FFF/000?text=QR+Code";
+                }
+            } else {
+                card.classList.add('hidden');
+            }
+        }
+
+        function copyAccountNo() {
+            const accNo = state.donateConfig.accountNo;
+            if (!accNo) return;
+            const tempInput = document.createElement('input');
+            tempInput.value = accNo;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showCustomAlert("📋 Đã sao chép!", `Đã sao chép số tài khoản: ${accNo}`);
         }
 
         function renderAdminDashboard() {
@@ -2862,11 +3204,11 @@
 
         function showCustomAlert(title, message, btnText = "Đã hiểu!") {
             document.getElementById('alert-title').innerText = title;
-            document.getElementById('alert-message').innerText = message;
+            document.getElementById('alert-message').innerHTML = message;
             document.getElementById('alert-btn').innerText = btnText;
 
             const emojiEl = document.getElementById('alert-emoji');
-            if (title.includes("Tuyệt") || title.includes("chính xác") || title.includes("Hoàn") || title.includes("Leo") || title.includes("Tạo") || title.includes("Cập Nhật")) {
+            if (title.includes("Tuyệt") || title.includes("chính xác") || title.includes("Hoàn") || title.includes("Leo") || title.includes("Tạo") || title.includes("Cập Nhật") || title.includes("Kính Chào") || title.includes("XÁC NHẬN")) {
                 emojiEl.innerText = "🎉";
             } else if (title.includes("Tiếc") || title.includes("Chưa") || title.includes("Sai") || title.includes("Khóa")) {
                 emojiEl.innerText = "💪";
@@ -2889,7 +3231,6 @@
             alertModal.classList.remove('flex');
         }
 
-        // BẮT BUỘC BIND TẤT CẢ PHƯƠNG THỨC RA NGOÀI WINDOW ĐỂ LIÊN KẾT HTML INLINE CLICK ĐƯỢC CHUẨN XÁC
         window.changeView = changeView;
         window.selectCompanion = selectCompanion;
         window.startStudyMode = startStudyMode;
@@ -2926,7 +3267,6 @@
         window.updateCompanionAvatarLabel = updateCompanionAvatarLabel;
         window.renderAdminStudents = renderAdminStudents;
 
-        // KHỞI ĐỘNG XÁC THỰC KHI LOAD TRANG
         initAuth();
     </script>
 </body>
