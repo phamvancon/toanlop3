@@ -271,6 +271,9 @@
                     </div>
                     <!-- Quick action buttons -->
                     <div class="flex flex-wrap justify-center gap-3">
+                        <button onclick="startTimesTablesMode()" class="px-5 py-3 bg-emerald-400 hover:bg-emerald-500 text-slate-900 font-black rounded-2xl flex items-center gap-2 shadow-md transform hover:scale-105 transition-all">
+                            📊 Bảng Cửu Chương & Luyện Tập
+                        </button>
                         <button onclick="startAdvancedMode()" class="px-5 py-3 bg-yellow-300 hover:bg-yellow-400 text-slate-800 font-extrabold rounded-2xl flex items-center gap-2 shadow-md transform hover:scale-105 transition-all">
                             🗻 Chinh Phục Đỉnh Núi (Toán Khó)
                         </button>
@@ -499,7 +502,7 @@
 
             <div class="relative z-10 space-y-6">
                 <span id="result-medal-emoji" class="text-7xl bouncy inline-block">🎉</span>
-                <h2 class="text-3xl font-black text-brand-600">PHIẾU ĐIỂM HOÀN THÀNH</h2>
+                <h2 class="text-3xl font-black text-brand-600">PHIẾU ĐIỂM HOÀY THÀNH</h2>
                 <p id="result-message" class="text-slate-500 font-bold">Thật tuyệt vời! Con đã hoàn thành xuất sắc thử thách này.</p>
 
                 <div id="result-stars" class="flex justify-center space-x-2 text-4xl">
@@ -580,6 +583,178 @@
                             Xác Nhận Đáp Án 🌟
                         </button>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIMES TABLES & PRACTICE SECTION -->
+        <section id="view-times-tables" class="hidden w-full space-y-6 transition-all duration-300 transform opacity-0 scale-95">
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-lg flex flex-wrap items-center justify-between gap-4 border-b-4 border-emerald-700">
+                <div class="flex items-center space-x-3">
+                    <button onclick="changeView('dashboard')" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-xl transition-colors flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    </button>
+                    <div>
+                        <h2 class="font-black text-white text-lg sm:text-xl flex items-center gap-2">
+                            📊 Học & Luyện Tập Bảng Cửu Chương
+                        </h2>
+                        <span class="text-xs text-emerald-100 font-extrabold bg-white/20 px-2.5 py-0.5 rounded-full">Bảng Nhân và Bảng Chia (2 đến 9)</span>
+                    </div>
+                </div>
+                <div class="flex bg-white/20 p-1 rounded-xl">
+                    <button id="times-table-btn-learn" onclick="switchTimesTableTab('learn')" class="px-4 py-1.5 rounded-lg text-xs font-black bg-white text-emerald-800 shadow">📖 Tra Cứu</button>
+                    <button id="times-table-btn-practice" onclick="switchTimesTableTab('practice')" class="px-4 py-1.5 rounded-lg text-xs font-black text-white">🎯 Luyện Tập</button>
+                </div>
+            </div>
+
+            <!-- TAB 1: TRA CỨU BẢNG CỬU CHƯƠNG -->
+            <div id="times-table-learn-area" class="space-y-6">
+                <!-- Select table number -->
+                <div class="bg-white p-5 rounded-3xl border-2 border-emerald-100 shadow-sm">
+                    <h3 class="font-black text-slate-700 mb-3 text-center sm:text-left text-sm uppercase tracking-wider">Chọn Bảng Cửu Chương Con Muốn Học:</h3>
+                    <div class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                        <script>
+                            for(let i=2; i<=9; i++) {
+                                document.write(`
+                                    <button onclick="selectTimesTableNum(${i})" id="btn-table-num-${i}" class="table-num-selector py-3 rounded-2xl font-black text-lg border-2 transition-all ${i===2 ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 text-slate-600' }">
+                                        bảng ${i}
+                                    </button>
+                                `);
+                            }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- Display table contents -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                    <!-- Multiplication table card -->
+                    <div class="bg-white rounded-3xl border-4 border-emerald-300 p-6 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between border-b-2 border-emerald-100 pb-3 mb-4">
+                            <h4 class="font-black text-emerald-800 text-lg flex items-center gap-1.5">
+                                ✖️ Bảng Nhân <span id="times-table-multi-num" class="text-2xl font-black text-emerald-500">2</span>
+                            </h4>
+                            <span class="text-xs font-bold text-slate-400">Bấm dòng bất kì để nghe đọc 🔊</span>
+                        </div>
+                        <div id="times-table-multi-list" class="space-y-2 flex-grow flex flex-col justify-center">
+                            <!-- Injected rows of multiplication -->
+                        </div>
+                    </div>
+
+                    <!-- Division table card -->
+                    <div class="bg-white rounded-3xl border-4 border-teal-300 p-6 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between border-b-2 border-teal-100 pb-3 mb-4">
+                            <h4 class="font-black text-teal-800 text-lg flex items-center gap-1.5">
+                                ➗ Bảng Chia <span id="times-table-div-num" class="text-2xl font-black text-teal-500">2</span>
+                            </h4>
+                            <span class="text-xs font-bold text-slate-400">Bấm dòng bất kì để nghe đọc 🔊</span>
+                        </div>
+                        <div id="times-table-div-list" class="space-y-2 flex-grow flex flex-col justify-center">
+                            <!-- Injected rows of division -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: LUYỆN TẬP CỬU CHƯƠNG -->
+            <div id="times-table-practice-area" class="hidden space-y-6">
+                <!-- Settings View -->
+                <div id="times-table-practice-settings" class="bg-white rounded-3xl border-2 border-emerald-100 p-6 shadow-md space-y-6 max-w-2xl mx-auto">
+                    <div class="text-center space-y-2">
+                        <span class="text-5xl inline-block bouncy">🎯⚡</span>
+                        <h3 class="font-black text-xl text-slate-800">Thử Thách Luyện Tập Trực Tuyến</h3>
+                        <p class="text-xs text-slate-400 font-bold">Luyện phản xạ nhanh giúp con tính toán thần tốc trên lớp!</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Select Mode -->
+                        <div>
+                            <label class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">1. Chọn Phép Tính:</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setTimesTablePracticeType('multi')" id="btn-practice-type-multi" class="practice-type-btn py-3 rounded-xl border-2 font-black text-xs sm:text-sm border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm transition-all">✖️ Phép Nhân</button>
+                                <button onclick="setTimesTablePracticeType('div')" id="btn-practice-type-div" class="practice-type-btn py-3 rounded-xl border-2 font-black text-xs sm:text-sm border-slate-100 bg-slate-50 text-slate-600 transition-all">➗ Phép Chia</button>
+                                <button onclick="setTimesTablePracticeType('both')" id="btn-practice-type-both" class="practice-type-btn py-3 rounded-xl border-2 font-black text-xs sm:text-sm border-slate-100 bg-slate-50 text-slate-600 transition-all">🔄 Trộn Cả Hai</button>
+                            </div>
+                        </div>
+
+                        <!-- Choose tables -->
+                        <div>
+                            <label class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">2. Chọn Các Bảng Muốn Luyện (Bấm để bật/tắt):</label>
+                            <div class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                                <script>
+                                    for(let i=2; i<=9; i++) {
+                                        document.write(`
+                                            <button onclick="toggleTableSelection(${i})" id="btn-practice-select-${i}" class="practice-table-select py-2 rounded-xl font-black border-2 border-emerald-500 bg-emerald-50 text-emerald-700 text-sm transition-all">
+                                                Bảng ${i}
+                                            </button>
+                                        `);
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 text-center">
+                        <button onclick="generateTimesTableQuiz()" class="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg rounded-2xl shadow-md hover:shadow-lg transform hover:scale-[1.03] transition-all flex items-center gap-2 mx-auto">
+                            ⚡ Bắt Đầu Thử Thách Ngay
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Arena View -->
+                <div id="times-table-practice-arena" class="hidden max-w-xl mx-auto bg-white rounded-3xl border-4 border-emerald-400 p-6 shadow-xl space-y-6 relative">
+                    <!-- Progress meter -->
+                    <div class="flex items-center justify-between text-xs text-slate-400 font-extrabold uppercase">
+                        <span>Tiến Độ Luyện Tập</span>
+                        <span id="times-table-q-progress">1 / 10</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                        <div id="times-table-q-progress-bar" class="bg-emerald-500 h-full transition-all" style="width: 10%"></div>
+                    </div>
+
+                    <!-- Question box -->
+                    <div id="times-table-q-box" class="text-center py-6 space-y-4">
+                        <!-- Dynamic Equation mathjax -->
+                    </div>
+
+                    <!-- Options -->
+                    <div id="times-table-options-grid" class="grid grid-cols-2 gap-3">
+                        <!-- Injected buttons -->
+                    </div>
+
+                    <!-- Voice assistant correction panel -->
+                    <div id="times-table-corr-box" class="hidden p-4 rounded-2xl bg-teal-50 border border-teal-200 text-slate-700 text-sm space-y-1">
+                        <p class="font-black text-teal-800 flex items-center gap-1">🔊 AI Voice Giải Thích:</p>
+                        <p id="times-table-corr-text" class="font-bold leading-relaxed"></p>
+                    </div>
+
+                    <!-- Footer actions -->
+                    <div class="flex justify-end pt-4 border-t border-slate-100">
+                        <button id="times-table-btn-next" onclick="nextTimesTableQuestion()" class="hidden px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-xl transition-all shadow">
+                            Câu Tiếp Theo ➡️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Result View -->
+                <div id="times-table-practice-summary" class="hidden max-w-sm mx-auto bg-white rounded-3xl border-4 border-brand-400 p-6 shadow-xl text-center space-y-6">
+                    <span id="times-table-summary-medal" class="text-6xl bouncy inline-block">🎉</span>
+                    <h3 class="font-black text-2xl text-slate-800">KẾT QUẢ THỬ THÁCH</h3>
+                    <p id="times-table-summary-msg" class="text-xs text-slate-500 font-bold leading-relaxed">Con đã rèn luyện phản xạ cửu chương xuất sắc!</p>
+
+                    <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
+                        <div class="border-r border-slate-200">
+                            <span class="block text-[10px] text-slate-400 font-extrabold uppercase">Đúng</span>
+                            <span id="times-table-summary-correct" class="text-2xl font-black text-emerald-500">10 / 10</span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] text-slate-400 font-extrabold uppercase">Thưởng Sao</span>
+                            <span id="times-table-summary-stars" class="text-2xl font-black text-yellow-500">+10 ⭐</span>
+                        </div>
+                    </div>
+
+                    <button onclick="endTimesTablesPracticeSession()" class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-2xl shadow transition-all">
+                        Trở lại Bản Đồ Học Tập 🗺️
+                    </button>
                 </div>
             </div>
         </section>
@@ -814,7 +989,7 @@
                         <span class="text-2xl">👑</span>
                         <h3 class="font-black text-lg">Cấp Phát Tài Khoản VIP Chuyên Sâu Của Admin</h3>
                     </div>
-                    <p class="text-xs text-slate-400 font-bold leading-relaxed">Cổng cấp tài khoản trực tuyến từ xa. Khi tạo VIP, học sinh có thể dùng mã và mật khẩu này để đăng nhập học chuyên sâu ngay lập tức!</p>
+                    <p class="text-xs text-slate-400 font-bold leading-relaxed">Cổng cấp tài khoản trực tuyến từ xa. Khi tạo VIP, học sinh có thể dùng mã và mật khẩu này để đăng nhập học chuyên sâu ngay lát!</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
                         <div>
@@ -1039,6 +1214,18 @@
                 activeQuestionIndex: 0,
                 userSelectedAnswers: {},
                 answersChecked: {}
+            },
+            timesTablesState: {
+                currentTab: 'learn', // 'learn' | 'practice'
+                selectedTableNum: 2,
+                practiceType: 'multi', // 'multi' | 'div' | 'both'
+                selectedTablesForPractice: [2, 3, 4, 5, 6, 7, 8, 9],
+                quizQuestions: [],
+                activeQIndex: 0,
+                userSelectedAnswer: null,
+                isAnswerChecked: false,
+                correctCount: 0,
+                starsAwarded: 0
             },
             adminState: {
                 unlocked: false,
@@ -1293,6 +1480,9 @@
                 .replace(/\+/g, ' cộng ')
                 .replace(/-/g, ' trừ ')
                 .replace(/x/g, ' nhân ')
+                .replace(/·/g, ' nhân ')
+                .replace(/\\times/g, ' nhân ')
+                .replace(/\\div/g, ' chia ')
                 .replace(/:/g, ' chia ')
                 .replace(/\//g, ' phần ')
                 .trim();
@@ -1666,6 +1856,18 @@
                         userSelectedAnswers: {},
                         answersChecked: {}
                     };
+                    state.timesTablesState = {
+                        currentTab: 'learn',
+                        selectedTableNum: 2,
+                        practiceType: 'multi',
+                        selectedTablesForPractice: [2, 3, 4, 5, 6, 7, 8, 9],
+                        quizQuestions: [],
+                        activeQIndex: 0,
+                        userSelectedAnswer: null,
+                        isAnswerChecked: false,
+                        correctCount: 0,
+                        starsAwarded: 0
+                    };
 
                     // Reset các ô nhập của màn hình Đăng Nhập
                     const loginCodeInp = document.getElementById('input-login-code');
@@ -1717,7 +1919,7 @@
         }
 
         function changeView(viewName) {
-            const views = ['welcome', 'dashboard', 'study', 'test', 'test-result', 'advanced', 'vip-olympic', 'leaderboard', 'admin'];
+            const views = ['welcome', 'dashboard', 'study', 'test', 'test-result', 'advanced', 'times-tables', 'vip-olympic', 'leaderboard', 'admin'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) {
@@ -1750,6 +1952,10 @@
 
             if (viewName === 'admin') {
                 renderAdminDashboard();
+            }
+
+            if (viewName === 'times-tables') {
+                renderTimesTableLists();
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2048,7 +2254,7 @@
         }
 
         function navigateStudyQuestion(dir) {
-            const weekData = contentData.weeks.find(x => x.id === state.currentWeekId);
+            const weekData = contentData.weeks.find(x => x.id === weekId);
             const targetIndex = state.studyState.activeQuestionIndex + dir;
 
             if (targetIndex >= 0 && targetIndex < weekData.revisionQuestions.length) {
@@ -2449,6 +2655,384 @@
             updateStatsUI();
         }
 
+        // --- NEW TIMES TABLES LEARNING & PRACTICE SYSTEMS ---
+        function startTimesTablesMode() {
+            state.timesTablesState.currentTab = 'learn';
+            state.timesTablesState.selectedTableNum = 2;
+            state.timesTablesState.quizQuestions = [];
+            state.timesTablesState.activeQIndex = 0;
+            state.timesTablesState.isAnswerChecked = false;
+            state.timesTablesState.userSelectedAnswer = null;
+            state.timesTablesState.correctCount = 0;
+            state.timesTablesState.starsAwarded = 0;
+
+            switchTimesTableTab('learn');
+            changeView('times-tables');
+        }
+        window.startTimesTablesMode = startTimesTablesMode;
+
+        function switchTimesTableTab(tabName) {
+            state.timesTablesState.currentTab = tabName;
+            
+            const btnLearn = document.getElementById('times-table-btn-learn');
+            const btnPractice = document.getElementById('times-table-btn-practice');
+            const areaLearn = document.getElementById('times-table-learn-area');
+            const areaPractice = document.getElementById('times-table-practice-area');
+
+            btnLearn.className = "px-4 py-1.5 rounded-lg text-xs font-black transition-all text-white";
+            btnPractice.className = "px-4 py-1.5 rounded-lg text-xs font-black transition-all text-white";
+            areaLearn.classList.add('hidden');
+            areaPractice.classList.add('hidden');
+
+            if (tabName === 'learn') {
+                btnLearn.className = "px-4 py-1.5 rounded-lg text-xs font-black bg-white text-emerald-800 shadow";
+                areaLearn.classList.remove('hidden');
+                renderTimesTableLists();
+            } else {
+                btnPractice.className = "px-4 py-1.5 rounded-lg text-xs font-black bg-white text-emerald-800 shadow";
+                areaPractice.classList.remove('hidden');
+                
+                document.getElementById('times-table-practice-settings').classList.remove('hidden');
+                document.getElementById('times-table-practice-arena').classList.add('hidden');
+                document.getElementById('times-table-practice-summary').classList.add('hidden');
+                resetPracticeButtonsUI();
+            }
+        }
+        window.switchTimesTableTab = switchTimesTableTab;
+
+        function selectTimesTableNum(num) {
+            state.timesTablesState.selectedTableNum = num;
+            
+            const buttons = document.querySelectorAll('.table-num-selector');
+            buttons.forEach(btn => {
+                btn.className = "table-num-selector py-3 rounded-2xl font-black text-lg border-2 border-slate-100 bg-slate-50 hover:bg-slate-100 text-slate-600 transition-all";
+            });
+
+            const activeBtn = document.getElementById(`btn-table-num-${num}`);
+            if (activeBtn) {
+                activeBtn.className = "table-num-selector py-3 rounded-2xl font-black text-lg border-2 border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm transition-all";
+            }
+
+            renderTimesTableLists();
+        }
+        window.selectTimesTableNum = selectTimesTableNum;
+
+        function renderTimesTableLists() {
+            const num = state.timesTablesState.selectedTableNum;
+            document.getElementById('times-table-multi-num').innerText = num;
+            document.getElementById('times-table-div-num').innerText = num;
+
+            const multiList = document.getElementById('times-table-multi-list');
+            const divList = document.getElementById('times-table-div-list');
+            
+            multiList.innerHTML = '';
+            divList.innerHTML = '';
+
+            // Generate Multiplication rows
+            for (let i = 1; i <= 10; i++) {
+                const prod = num * i;
+                const row = document.createElement('button');
+                row.className = "w-full py-2.5 px-4 rounded-xl border border-emerald-50 hover:border-emerald-200 hover:bg-emerald-50 text-slate-700 text-left font-black text-sm flex items-center justify-between transition-all";
+                row.innerHTML = `<span>$${num} \\times ${i} = ${prod}$</span> <span class="text-xs text-emerald-500 opacity-60">🔊 Nghe đọc</span>`;
+                row.onclick = () => {
+                    speakText(`${num} nhân ${i} bằng ${prod}`);
+                };
+                multiList.appendChild(row);
+            }
+
+            // Generate Division rows
+            for (let i = 1; i <= 10; i++) {
+                const prod = num * i;
+                const row = document.createElement('button');
+                row.className = "w-full py-2.5 px-4 rounded-xl border border-teal-50 hover:border-teal-200 hover:bg-teal-50 text-slate-700 text-left font-black text-sm flex items-center justify-between transition-all";
+                row.innerHTML = `<span>$${prod} \\div ${num} = ${i}$</span> <span class="text-xs text-teal-500 opacity-60">🔊 Nghe đọc</span>`;
+                row.onclick = () => {
+                    speakText(`${prod} chia ${num} bằng ${i}`);
+                };
+                divList.appendChild(row);
+            }
+
+            if (window.MathJax) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        // Practice Config Logic
+        function setTimesTablePracticeType(type) {
+            state.timesTablesState.practiceType = type;
+            const btns = document.querySelectorAll('.practice-type-btn');
+            btns.forEach(btn => {
+                btn.className = "practice-type-btn py-3 rounded-xl border-2 font-black text-xs sm:text-sm border-slate-100 bg-slate-50 text-slate-600 transition-all";
+            });
+
+            const activeBtn = document.getElementById(`btn-practice-type-${type}`);
+            if (activeBtn) {
+                activeBtn.className = "practice-type-btn py-3 rounded-xl border-2 font-black text-xs sm:text-sm border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm transition-all";
+            }
+        }
+        window.setTimesTablePracticeType = setTimesTablePracticeType;
+
+        function toggleTableSelection(num) {
+            const arr = state.timesTablesState.selectedTablesForPractice;
+            const index = arr.indexOf(num);
+            
+            if (index > -1) {
+                if (arr.length <= 1) {
+                    showCustomAlert("⚠️ Thao tác lỗi!", "Con phải chọn ít nhất 1 bảng cửu chương để luyện tập nhé!");
+                    return;
+                }
+                arr.splice(index, 1);
+            } else {
+                arr.push(num);
+            }
+
+            resetPracticeButtonsUI();
+        }
+        window.toggleTableSelection = toggleTableSelection;
+
+        function resetPracticeButtonsUI() {
+            for (let i = 2; i <= 9; i++) {
+                const btn = document.getElementById(`btn-practice-select-${i}`);
+                if (!btn) continue;
+                const isSelected = state.timesTablesState.selectedTablesForPractice.includes(i);
+                
+                if (isSelected) {
+                    btn.className = "practice-table-select py-2 rounded-xl font-black border-2 border-emerald-500 bg-emerald-50 text-emerald-700 text-sm transition-all";
+                } else {
+                    btn.className = "practice-table-select py-2 rounded-xl font-black border-2 border-slate-100 bg-slate-50 text-slate-500 text-sm transition-all";
+                }
+            }
+        }
+
+        // Generate dynamic multiplication & division questions
+        function generateTimesTableQuiz() {
+            const type = state.timesTablesState.practiceType;
+            const activeTables = state.timesTablesState.selectedTablesForPractice;
+
+            const questions = [];
+            
+            for (let q = 1; q <= 10; q++) {
+                // Pick a random table number from the selected ones
+                const tableNum = activeTables[Math.floor(Math.random() * activeTables.length)];
+                const factor = Math.floor(2 + Math.random() * 8); // 2 to 9
+                const product = tableNum * factor;
+
+                let qType = type;
+                if (type === 'both') {
+                    qType = Math.random() > 0.5 ? 'multi' : 'div';
+                }
+
+                let equation = '';
+                let correctAnswer = '';
+                let voiceSpeech = '';
+
+                if (qType === 'multi') {
+                    equation = `$${tableNum} \\times ${factor} = ?$`;
+                    correctAnswer = String(product);
+                    voiceSpeech = `${tableNum} nhân ${factor} bằng bao nhiêu nhỉ?`;
+                } else {
+                    equation = `$${product} \\div ${tableNum} = ?$`;
+                    correctAnswer = String(factor);
+                    voiceSpeech = `${product} chia ${tableNum} bằng bao nhiêu nhỉ?`;
+                }
+
+                // Distractors generator
+                const optionsSet = new Set();
+                optionsSet.add(correctAnswer);
+
+                while (optionsSet.size < 4) {
+                    let randomDistractor = 0;
+                    if (qType === 'multi') {
+                        randomDistractor = tableNum * (Math.floor(2 + Math.random() * 8));
+                    } else {
+                        randomDistractor = Math.floor(2 + Math.random() * 8);
+                    }
+                    optionsSet.add(String(randomDistractor));
+                }
+
+                const optionsArr = Array.from(optionsSet);
+                // Shuffle array
+                optionsArr.sort(() => Math.random() - 0.5);
+
+                questions.push({
+                    equation: equation,
+                    correctAnswer: correctAnswer,
+                    options: optionsArr,
+                    tableNum: tableNum,
+                    factor: factor,
+                    product: product,
+                    qType: qType,
+                    voiceSpeech: voiceSpeech
+                });
+            }
+
+            state.timesTablesState.quizQuestions = questions;
+            state.timesTablesState.activeQIndex = 0;
+            state.timesTablesState.userSelectedAnswer = null;
+            state.timesTablesState.isAnswerChecked = false;
+            state.timesTablesState.correctCount = 0;
+            state.timesTablesState.starsAwarded = 0;
+
+            document.getElementById('times-table-practice-settings').classList.add('hidden');
+            document.getElementById('times-table-practice-arena').classList.remove('hidden');
+
+            loadTimesTableQuestion();
+        }
+        window.generateTimesTableQuiz = generateTimesTableQuiz;
+
+        function loadTimesTableQuestion() {
+            const index = state.timesTablesState.activeQIndex;
+            const question = state.timesTablesState.quizQuestions[index];
+
+            document.getElementById('times-table-q-progress').innerText = `${index + 1} / 10`;
+            document.getElementById('times-table-q-progress-bar').style.width = `${(index + 1) * 10}%`;
+
+            const box = document.getElementById('times-table-q-box');
+            box.innerHTML = `
+                <div class="flex items-center justify-center gap-2">
+                    <span class="text-4xl sm:text-5xl font-black text-slate-700" id="table-q-equ">${question.equation}</span>
+                    <button onclick="window.speakText(state.timesTablesState.quizQuestions[state.timesTablesState.activeQIndex].voiceSpeech)" class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl text-sm transition-all" title="Nghe câu hỏi">🔊</button>
+                </div>
+            `;
+
+            // Render options list
+            const optionsGrid = document.getElementById('times-table-options-grid');
+            optionsGrid.innerHTML = '';
+
+            question.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = `p-4 rounded-2xl border-2 text-center font-black text-lg transition-all ${
+                    state.timesTablesState.userSelectedAnswer === opt
+                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700 ring-2 ring-emerald-100 shadow-sm'
+                        : 'border-slate-100 bg-slate-50 hover:bg-slate-100 text-slate-600'
+                }`;
+                btn.innerText = opt;
+
+                if (state.timesTablesState.isAnswerChecked) {
+                    btn.disabled = true;
+                    if (opt === question.correctAnswer) {
+                        btn.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-700 font-black text-lg text-center flex items-center justify-center gap-2";
+                        btn.innerHTML = `${opt} <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+                    } else if (state.timesTablesState.userSelectedAnswer === opt) {
+                        btn.className = "p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 text-rose-700 font-black text-lg text-center flex items-center justify-center gap-2";
+                        btn.innerHTML = `${opt} <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`;
+                    }
+                } else {
+                    btn.onclick = () => {
+                        state.timesTablesState.userSelectedAnswer = opt;
+                        submitTimesTableAnswer(opt);
+                    };
+                }
+
+                optionsGrid.appendChild(btn);
+            });
+
+            const corrBox = document.getElementById('times-table-corr-box');
+            const nextBtn = document.getElementById('times-table-btn-next');
+
+            if (state.timesTablesState.isAnswerChecked) {
+                corrBox.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+                
+                let textResult = '';
+                if (question.qType === 'multi') {
+                    textResult = `Đúng rồi! Vì ${question.tableNum} nhân ${question.factor} bằng ${question.product}.`;
+                } else {
+                    textResult = `Chính xác! Vì ${question.product} chia ${question.tableNum} bằng ${question.factor}.`;
+                }
+                document.getElementById('times-table-corr-text').innerText = textResult;
+            } else {
+                corrBox.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+            }
+
+            if (window.MathJax) {
+                window.MathJax.typesetPromise();
+            }
+        }
+        window.loadTimesTableQuestion = loadTimesTableQuestion;
+
+        async function submitTimesTableAnswer(opt) {
+            state.timesTablesState.userSelectedAnswer = opt;
+            state.timesTablesState.isAnswerChecked = true;
+
+            const index = state.timesTablesState.activeQIndex;
+            const question = state.timesTablesState.quizQuestions[index];
+
+            const isCorrect = opt === question.correctAnswer;
+            if (isCorrect) {
+                state.timesTablesState.correctCount++;
+                state.timesTablesState.starsAwarded += 1; // 1 Star per correct answer
+                triggerConfetti();
+                speakText("Chính xác, giỏi quá!");
+            } else {
+                speakText(`Tiếc quá. ${question.qType === 'multi' ? `${question.tableNum} nhân ${question.factor} bằng ${question.product}` : `${question.product} chia ${question.tableNum} bằng ${question.factor}`}`);
+            }
+
+            loadTimesTableQuestion();
+        }
+        window.submitTimesTableAnswer = submitTimesTableAnswer;
+
+        function nextTimesTableQuestion() {
+            const index = state.timesTablesState.activeQIndex;
+            const total = state.timesTablesState.quizQuestions.length;
+
+            if (index + 1 < total) {
+                state.timesTablesState.activeQIndex++;
+                state.timesTablesState.userSelectedAnswer = null;
+                state.timesTablesState.isAnswerChecked = false;
+                loadTimesTableQuestion();
+            } else {
+                showTimesTableQuizSummary();
+            }
+        }
+        window.nextTimesTableQuestion = nextTimesTableQuestion;
+
+        async function showTimesTableQuizSummary() {
+            document.getElementById('times-table-practice-arena').classList.add('hidden');
+            
+            const summary = document.getElementById('times-table-practice-summary');
+            summary.classList.remove('hidden');
+
+            const correct = state.timesTablesState.correctCount;
+            const stars = state.timesTablesState.starsAwarded;
+
+            document.getElementById('times-table-summary-correct').innerText = `${correct} / 10`;
+            document.getElementById('times-table-summary-stars').innerText = `+${stars} ⭐`;
+
+            let medal = "🥇";
+            let msg = "Phản xạ của con cực kỳ tốt!";
+            if (correct === 10) {
+                medal = "👑";
+                msg = "Thiên tài bảng cửu chương! Điểm số tuyệt đối!";
+            } else if (correct >= 7) {
+                medal = "🥇";
+                msg = "Con làm rất tốt, tiếp tục phát huy con nhé!";
+            } else if (correct >= 4) {
+                medal = "🥈";
+                msg = "Khá lắm! Con hãy luyện tập thêm nhiều lần để tăng tốc phản xạ nhé!";
+            } else {
+                medal = "🥉";
+                msg = "Hãy xem lại bảng tra cứu và thử sức lần nữa nhé!";
+            }
+
+            document.getElementById('times-table-summary-medal').innerText = medal;
+            document.getElementById('times-table-summary-msg').innerText = msg;
+
+            // Save reward to cloud
+            state.user.stars += stars;
+            await saveStudentProfileToCloud();
+            updateStatsUI();
+            triggerConfetti();
+        }
+
+        function endTimesTablesPracticeSession() {
+            document.getElementById('times-table-practice-summary').classList.add('hidden');
+            changeView('dashboard');
+        }
+        window.endTimesTablesPracticeSession = endTimesTablesPracticeSession;
+
+        // --- OLD MODULES BINDING CORRECTION ---
         function startVipOlympicMode() {
             if (!state.user.isVip) {
                 showCustomAlert("🔒 Tính năng VIP!", "Rất tiếc, đấu trường thi thử Olympic chỉ dành riêng cho tài khoản VIP đã kích hoạt!");
@@ -2775,7 +3359,7 @@
                         </div>
                         <div>
                             <label class="block font-black text-slate-500 mb-1">Đồng hành:</label>
-                            <select id="edit-companion-${s.code}" onchange="updateCompanionAvatarLabel('${s.code}', this.value)" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none bg-white font-sans">
+                            <select id="edit-companion-${s.code}" onchange="updateCompanionAvatarLabel('${s.code}', this.value)" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold outline-none bg-white">
                                 <option value="rabbit" ${s.companion === 'rabbit' ? 'selected' : ''}>Thỏ🐰</option>
                                 <option value="monkey" ${s.companion === 'monkey' ? 'selected' : ''}>Khỉ🐒</option>
                                 <option value="turtle" ${s.companion === 'turtle' ? 'selected' : ''}>Rùa🐢</option>
@@ -3214,6 +3798,10 @@
         window.deleteStudentCloud = deleteStudentCloud;
         window.updateCompanionAvatarLabel = updateCompanionAvatarLabel;
         window.renderAdminStudents = renderAdminStudents;
+
+        // Times Tables practices
+        window.setTimesTablePracticeType = setTimesTablePracticeType;
+        window.toggleTableSelection = toggleTableSelection;
 
         initAuth();
     </script>
