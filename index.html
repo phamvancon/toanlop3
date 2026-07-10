@@ -2938,7 +2938,7 @@
                 if (question.qType === 'multi') {
                     textResult = `Đúng rồi! Vì ${question.tableNum} nhân ${question.factor} bằng ${question.product}.`;
                 } else {
-                    textResult = `Chính xác! Vì ${question.product} chia ${question.tableNum} bằng ${question.factor}.`;
+                    textResult = `đúng rồi! Vì ${question.product} chia ${question.tableNum} bằng ${question.factor}.`;
                 }
                 document.getElementById('times-table-corr-text').innerText = textResult;
             } else {
@@ -2964,7 +2964,7 @@
                 state.timesTablesState.correctCount++;
                 state.timesTablesState.starsAwarded += 1; // 1 Star per correct answer
                 triggerConfetti();
-                speakText("Chính xác, giỏi quá!");
+                speakText("đúng rồi, giỏi quá!");
             } else {
                 speakText(`Tiếc quá. ${question.qType === 'multi' ? `${question.tableNum} nhân ${question.factor} bằng ${question.product}` : `${question.product} chia ${question.tableNum} bằng ${question.factor}`}`);
             }
